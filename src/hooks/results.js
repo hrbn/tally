@@ -62,7 +62,6 @@ const useResultPlugin = () => {
           widget: new ResultWidget(line.number),
           side: 1
         });
-        //   widgets.push(deco.range(line.to));
         builder.add(line.to, line.to, deco);
         pos = line.to + 1;
       }

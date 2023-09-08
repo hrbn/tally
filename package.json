@@ -16,6 +16,15 @@
     "@fontsource/ibm-plex-mono": "^4.5.13",
     "@fontsource/public-sans": "^5.0.1",
     "@mui/joy": "^5.0.0-alpha.81",
+    "@uiw/codemirror-theme-andromeda": "^4.21.13",
+    "@uiw/codemirror-theme-atomone": "^4.21.13",
+    "@uiw/codemirror-theme-basic": "^4.21.13",
+    "@uiw/codemirror-theme-bbedit": "^4.21.13",
+    "@uiw/codemirror-theme-eclipse": "^4.21.13",
+    "@uiw/codemirror-theme-github": "^4.21.13",
+    "@uiw/codemirror-theme-material": "^4.21.13",
+    "@uiw/codemirror-theme-okaidia": "^4.21.13",
+    "@uiw/codemirror-theme-vscode": "^4.21.13",
     "@uiw/react-codemirror": "^4.19.7",
     "axios": "^1.2.6",
     "cssnano": "^5.1.14",
@@ -24,7 +33,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.0",
-    "react-icons": "^4.8.0"
+    "react-icons": "^4.8.0",
+    "usehooks-ts": "^2.9.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.26",

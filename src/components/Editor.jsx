@@ -4,8 +4,10 @@ import CodeMirror from '@uiw/react-codemirror';
 import { EditorView } from '@codemirror/view';
 import useResultPlugin from '../hooks/results';
 import { monokai } from '../helpers/monokai';
+
 import { StreamLanguage } from '@codemirror/language';
 import Box from '@mui/joy/Box';
+import { useColorScheme } from '@mui/joy/styles';
 
 import { mathjs } from '../helpers/syntax';
 import useEvaluator from '../hooks/evaluate';
@@ -43,7 +45,7 @@ export default function Editor(props) {
   };
 
   return (
-    <Box sx={{ paddingTop: 2 }} {...props}>
+    <Box {...props}>
       <CodeMirror
         value={doc}
         onCreateEditor={onCreateEditor}

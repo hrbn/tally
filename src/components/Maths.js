@@ -64,9 +64,6 @@ export const Maths = async () => {
   math.createUnit('kph', {
     definition: '1 kilometers/hour'
   });
-  math.createUnit('h', {
-    definition: '1 hour'
-  });
   math.import(
     {
       hexToChar: hexToChar,

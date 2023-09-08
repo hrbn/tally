@@ -218,7 +218,6 @@ export default function MenuToolbar() {
       orientation="horizontal"
       aria-label="application menu bar"
       role="menubar"
-      data-joy-color-scheme="dark"
       sx={{
         bgcolor: 'background.level1',
         px: 2,
@@ -229,15 +228,15 @@ export default function MenuToolbar() {
     >
       <ListItem
         sx={{
-          color: '#9ccc65'
+          color: '#6a9955'
         }}
       >
         <TallyIcon />
         <Typography
           sx={{
-            color: '#9ccc65',
             marginLeft: '0.5em',
-            marginRight: '1em'
+            marginRight: '1em',
+            color: '#6a9955'
           }}
         >
           TALLY

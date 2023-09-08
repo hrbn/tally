@@ -10,7 +10,9 @@ body {
   width: 100%;
   font-size: 1.15rem;
 }
-
+.cm-editor {
+  background-color: transparent;
+}
 pre,
 code,
 .font-monospace {

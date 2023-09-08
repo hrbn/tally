@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 
 import App from './App';
 import ErrorBoundary from './components/ErrorBoundary';
+import { CssVarsProvider } from '@mui/joy/styles';
 
 import '@fontsource/public-sans';
 
@@ -15,7 +16,9 @@ import './index.css';
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ErrorBoundary>
-      <App />
+      <CssVarsProvider defaultMode="dark">
+        <App />
+      </CssVarsProvider>
     </ErrorBoundary>
   </React.StrictMode>
 );
