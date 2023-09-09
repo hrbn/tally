@@ -88,13 +88,13 @@ define(['./workbox-03b5ff7e'], (function (workbox) { 'use strict';
     "revision": null
   }, {
     "url": "index.html",
-    "revision": "96d36fc3dad8ddf19a13c64c1b192752"
+    "revision": "852daf09179a24bdd9177377042aefac"
   }, {
     "url": "registerSW.js",
     "revision": "1872c500de691dce40960bb85481de07"
   }, {
     "url": "stats.html",
-    "revision": "ffdd9450210f67295b4512556ffde590"
+    "revision": "b2973ae80d3495856ee7d5f3f1c67073"
   }, {
     "url": "manifest.webmanifest",
     "revision": "acca8720f43514d11e4fed4d9b8c3830"
