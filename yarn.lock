@@ -1670,78 +1670,6 @@
     "@codemirror/state" "^6.0.0"
     "@codemirror/view" "^6.0.0"
 
-"@uiw/codemirror-theme-andromeda@^4.21.13":
-  version "4.21.13"
-  resolved "https://registry.yarnpkg.com/@uiw/codemirror-theme-andromeda/-/codemirror-theme-andromeda-4.21.13.tgz#a7fbe6bef9a1d53167cb9ba6fcde930a95a7e2b8"
-  integrity sha512-PbtDoS/3P3hMSR6kazCKlkf0ENgtNWW66to/dNakQc+5oDebtEoIN0+4BbRFnqIt5rFENGIYDwmtyTIEJHfvFg==
-  dependencies:
-    "@uiw/codemirror-themes" "4.21.13"
-
-"@uiw/codemirror-theme-atomone@^4.21.13":
-  version "4.21.13"
-  resolved "https://registry.yarnpkg.com/@uiw/codemirror-theme-atomone/-/codemirror-theme-atomone-4.21.13.tgz#3ad62b8e6b0c70e6e98629304ec604eb91fec88e"
-  integrity sha512-bOhE4a7od8OnQXyTXIleC5khYSs5ChVSzf3c2zIG5BAZ3fXxnu8yadOYaSCdFgI+rfs0W26P7jZGO0zIMc7gUA==
-  dependencies:
-    "@uiw/codemirror-themes" "4.21.13"
-
-"@uiw/codemirror-theme-basic@^4.21.13":
-  version "4.21.13"
-  resolved "https://registry.yarnpkg.com/@uiw/codemirror-theme-basic/-/codemirror-theme-basic-4.21.13.tgz#3e64368e63917dc21c2864094a9b7de580b040c4"
-  integrity sha512-qgQMOuV6QNgubt+pwELLXSt+0HBNv7/9YON7g71rO06OIlKxC1aVqRyBXZIVn6W9KS1zfTmW12zO5WDLeW9/eg==
-  dependencies:
-    "@uiw/codemirror-themes" "4.21.13"
-
-"@uiw/codemirror-theme-bbedit@^4.21.13":
-  version "4.21.13"
-  resolved "https://registry.yarnpkg.com/@uiw/codemirror-theme-bbedit/-/codemirror-theme-bbedit-4.21.13.tgz#c04f70c57598a9a4dd8298137631d30bfa08d5cd"
-  integrity sha512-ySYtSEui7UI7O/FD7BWkt1zvYuZC3qz3ABlpj6b99k1uR8TROXCPMfFNPwilKyHsaGQbGj873kYHsAIDc7tvIA==
-  dependencies:
-    "@uiw/codemirror-themes" "4.21.13"
-
-"@uiw/codemirror-theme-eclipse@^4.21.13":
-  version "4.21.13"
-  resolved "https://registry.yarnpkg.com/@uiw/codemirror-theme-eclipse/-/codemirror-theme-eclipse-4.21.13.tgz#fa55fdf6bd8d0754b71eb4113b795a0c482c8340"
-  integrity sha512-TLkOHhelMqqIaO7Gm6fmgz+J7d/TQ9Z3mCJd21KmyWILhFqDFbccvJ1wZ2fK4/HxtT7g2cJwrJBuT1Wh+STl/w==
-  dependencies:
-    "@uiw/codemirror-themes" "4.21.13"
-
-"@uiw/codemirror-theme-github@^4.21.13":
-  version "4.21.13"
-  resolved "https://registry.npmjs.org/@uiw/codemirror-theme-github/-/codemirror-theme-github-4.21.13.tgz"
-  integrity sha512-UblpWrkb+epGSrhf8ztuDO75+GOD8Otf7I/saM3lUzipdeKBOSC7Q7o7De36xbF1HpfOUYbqsajo1X3INf8Y7A==
-  dependencies:
-    "@uiw/codemirror-themes" "4.21.13"
-
-"@uiw/codemirror-theme-material@^4.21.13":
-  version "4.21.13"
-  resolved "https://registry.yarnpkg.com/@uiw/codemirror-theme-material/-/codemirror-theme-material-4.21.13.tgz#3feeef960a1177b900ada9cd08bea374fb977624"
-  integrity sha512-Zfjvl7crYLkJfPfst4kMx+EJ1SxGQ8k9OJA9BmU8jPtoZYAOxDCRb8KTlgxK48vQ/lJOYC1k06hs1ANYsVrnQQ==
-  dependencies:
-    "@uiw/codemirror-themes" "4.21.13"
-
-"@uiw/codemirror-theme-okaidia@^4.21.13":
-  version "4.21.13"
-  resolved "https://registry.yarnpkg.com/@uiw/codemirror-theme-okaidia/-/codemirror-theme-okaidia-4.21.13.tgz#1474799f63faf8d2274435f79cdb782c37f032e0"
-  integrity sha512-0cmt0NJYW45sJRYvAI3OvgWNyphkhQ7+WkXuKcdnvJX3Tkuo+IP5H07IrhHr5E/mUFmIfCOAMEnfn+qaIo9h0A==
-  dependencies:
-    "@uiw/codemirror-themes" "4.21.13"
-
-"@uiw/codemirror-theme-vscode@^4.21.13":
-  version "4.21.13"
-  resolved "https://registry.yarnpkg.com/@uiw/codemirror-theme-vscode/-/codemirror-theme-vscode-4.21.13.tgz#de56db92f1c9dc9a2111a6c240ef70275bb3805a"
-  integrity sha512-Ya2m3BZ4vUFJE7QUWvWyzBYCgMYSx8q14rF3DiSyMO/+QkqwIpUN10zCWs/1pfJozVIcghAY2cHgFU+brhGQBw==
-  dependencies:
-    "@uiw/codemirror-themes" "4.21.13"
-
-"@uiw/codemirror-themes@4.21.13":
-  version "4.21.13"
-  resolved "https://registry.npmjs.org/@uiw/codemirror-themes/-/codemirror-themes-4.21.13.tgz"
-  integrity sha512-+IeYow6kmz1LJmXd1rL7ngVxb5lm2wKrjYNfomDvmoUz2gKcca8y7pWGMIFhIsabrNW11SFVSloVkj9ZXw7e1Q==
-  dependencies:
-    "@codemirror/language" "^6.0.0"
-    "@codemirror/state" "^6.0.0"
-    "@codemirror/view" "^6.0.0"
-
 "@uiw/react-codemirror@^4.19.7":
   version "4.21.7"
   resolved "https://registry.npmjs.org/@uiw/react-codemirror/-/react-codemirror-4.21.7.tgz"
@@ -5350,11 +5278,6 @@ uri-js@^4.2.2:
   integrity sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==
   dependencies:
     punycode "^2.1.0"
-
-usehooks-ts@^2.9.1:
-  version "2.9.1"
-  resolved "https://registry.yarnpkg.com/usehooks-ts/-/usehooks-ts-2.9.1.tgz#953d3284851ffd097432379e271ce046a8180b37"
-  integrity sha512-2FAuSIGHlY+apM9FVlj8/oNhd+1y+Uwv5QNkMQz1oSfdHk4PXo1qoCw9I5M7j0vpH8CSWFJwXbVPeYDjLCx9PA==
 
 util-deprecate@^1.0.1, util-deprecate@^1.0.2:
   version "1.0.2"

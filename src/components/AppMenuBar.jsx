@@ -279,6 +279,7 @@ export default function MenuToolbar() {
                     Open File {renderShortcut('⌘ O')}
                   </MenuItem>
                 </List>
+                <input ref={inputEl} type="file" onChange={handleChange} hidden />
               </ListItem>
             </Menu>
           }

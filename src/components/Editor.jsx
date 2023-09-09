@@ -7,7 +7,6 @@ import { monokai } from '../helpers/monokai';
 
 import { StreamLanguage } from '@codemirror/language';
 import Box from '@mui/joy/Box';
-import { useColorScheme } from '@mui/joy/styles';
 
 import { mathjs } from '../helpers/syntax';
 import useEvaluator from '../hooks/evaluate';
