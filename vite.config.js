@@ -47,6 +47,7 @@ const pwaOptions = {
 };
 
 export default defineConfig({
+  base: '/tally',
   plugins: [
     react(),
     visualizer({
