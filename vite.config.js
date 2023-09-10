@@ -6,20 +6,20 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 const pwaOptions = {
   mode: 'development',
-  base: '/',
+  base: '/tally',
   manifest: {
     name: 'Tally - Notepad Calculator',
     short_name: 'Tally',
-    start_url: '/',
-    scope: '/',
-    id: '/',
-    theme_color: '#1f2228',
-    background_color: '#1f2228',
+    start_url: '/tally',
+    scope: '/tally',
+    id: '/tally',
+    theme_color: '#25252D',
+    background_color: '#25252D',
     display: 'standalone',
     orientation: 'any',
     icons: [
       {
-        src: 'public/images/manifest-icon-192.maskable.png',
+        src: 'public/images/manifest-icon-192.png',
         sizes: '192x192',
         type: 'image/png',
         purpose: 'any'
@@ -31,7 +31,7 @@ const pwaOptions = {
         purpose: 'maskable'
       },
       {
-        src: 'public/images/manifest-icon-512.maskable.png',
+        src: 'public/images/manifest-icon-512.png',
         sizes: '512x512',
         type: 'image/png',
         purpose: 'any'
