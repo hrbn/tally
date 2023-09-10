@@ -94,7 +94,7 @@ define(['./workbox-03b5ff7e'], (function (workbox) { 'use strict';
     "revision": "1872c500de691dce40960bb85481de07"
   }, {
     "url": "stats.html",
-    "revision": "4a24279672c6c0591c3451d2827a56c3"
+    "revision": "93064b700ffcf7d37ee2eed408a562b1"
   }, {
     "url": "manifest.webmanifest",
     "revision": "acca8720f43514d11e4fed4d9b8c3830"
