@@ -1,6 +1,6 @@
 # Tally
 
-A document-based notepad calculator progressive web app with real-time calculations as you type.
+A notepad calculator PWA with instant calculations as you type.
 
 ## Features
 
