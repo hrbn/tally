@@ -3,7 +3,8 @@ import { CalcProvider } from './context';
 
 import Editor from './components/Editor';
 import AppMenuBar from './components/AppMenuBar';
-import { Toaster } from 'react-hot-toast';
+// import { Toaster } from 'react-hot-toast';
+// import { ToastContainer } from 'react-toastify';
 
 import CssBaseline from '@mui/joy/CssBaseline';
 
@@ -26,7 +27,7 @@ function App() {
         <Editor />
         {/* <ActionMenu /> */}
       </div>
-      <Toaster
+      {/* <Toaster
         position="bottom-right"
         toastOptions={{
           duration: 3000,
@@ -37,7 +38,8 @@ function App() {
             fontSize: '1rem'
           }
         }}
-      />
+      /> */}
+      {/* <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={true} newestOnTop={true} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" /> */}
     </CalcProvider>
   );
 }

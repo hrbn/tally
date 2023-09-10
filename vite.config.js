@@ -60,8 +60,8 @@ export default defineConfig({
     open: '/index.html'
   },
   build: {
-    sourcemap: false,
-    target: 'esnext'
+    target: 'esnext',
+    minify: 'terser'
   },
   publicDir: 'public'
 });
