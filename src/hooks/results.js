@@ -3,9 +3,7 @@ import { EditorView, WidgetType, Decoration, ViewPlugin } from '@codemirror/view
 import { RangeSetBuilder } from '@codemirror/state';
 import { useCalc } from '../context';
 import useFormatter from '../hooks/format';
-// import toast from 'react-hot-toast';
-// import { ToastContainer, toast } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
+import toast from 'react-hot-toast';
 
 const useResultPlugin = () => {
   const { results } = useCalc();
@@ -27,7 +25,7 @@ const useResultPlugin = () => {
   const copyOnClick = (e) => {
     if (e.target.parentElement.classList.contains('cm-line-result')) {
       copyTextToClipboard(e.target.textContent);
-      // toast(`Copied "${e.target.textContent}"`);
+      toast(`Copied "${e.target.textContent}"`);
     }
   };
 

@@ -6,7 +6,7 @@ import ListItem from '@mui/joy/ListItem';
 import ListItemButton from '@mui/joy/ListItemButton';
 import ListDivider from '@mui/joy/ListDivider';
 import Typography, { typographyClasses } from '@mui/joy/Typography';
-// import toast from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { useCalc } from '../context';
 import useFormatter from '../hooks/format';
 import exampleContent from '../data/example';
@@ -140,7 +140,7 @@ export default function MenuToolbar() {
   const CopyFileResults = () => {
     const docWithResults = [...results.values()].map((v, i) => (v === null ? `${lines[i]}` : `${lines[i]} = ${format(v)}`)).join('\n');
     copyTextToClipboard(docWithResults);
-    // toast('Copied file with results');
+    toast('Copied file with results');
   };
 
   const UploadFile = () => {
