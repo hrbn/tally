@@ -23,7 +23,7 @@ To run locally, follow these steps:
 
 ## Technology Stack
 
-- JavaScript
+- TypeScript
 - Vite.js
 - React.js
 - MUI
