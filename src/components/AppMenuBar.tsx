@@ -1,4 +1,4 @@
-import { forwardRef, cloneElement, useMemo, useEffect, useState, useRef } from 'react';
+import React, { forwardRef, cloneElement, useMemo, useEffect, useState, useRef, Ref, ChangeEvent, KeyboardEvent } from 'react';
 import Menu from '@mui/joy/Menu';
 import MenuItem, { menuItemClasses } from '@mui/joy/MenuItem';
 import List from '@mui/joy/List';
@@ -10,6 +10,24 @@ import toast from 'react-hot-toast';
 import { useCalc } from '../context';
 import useFormatter from '../hooks/format';
 import exampleContent from '../data/example';
+
+// Define the types for props, state or any other variables that you use
+interface MenuButtonProps {
+  children: React.ReactNode;
+  menu: React.ReactElement;
+  open: boolean;
+  onOpen: (event: KeyboardEvent | MouseEvent) => void;
+  onKeyDown: (event: KeyboardEvent) => void;
+  // Add any other props you expect here
+}
+
+// Define any state or custom hook types
+type CalcContextType = {
+  doc: string;
+  lines: string[];
+  results: Map<number, any>;
+  setDoc: React.Dispatch<React.SetStateAction<string>>;
+};
 
 const saveToFile = (content) => {
   const element = document.createElement('a');
@@ -37,7 +55,7 @@ const TallyIcon = (props) => {
   );
 };
 
-const MenuButton = forwardRef(({ children, menu, open, onOpen, onKeyDown, ...props }, ref) => {
+const MenuButton = forwardRef<HTMLElement, MenuButtonProps>(({ children, menu, open, onOpen, onKeyDown, ...props }, ref) => {
   const buttonRef = useRef(null);
   const menuActions = useRef(null);
   const combinedRef = useMemo(() => {
@@ -97,15 +115,15 @@ const MenuButton = forwardRef(({ children, menu, open, onOpen, onKeyDown, ...pro
     </>
   );
 });
+MenuButton.displayName = 'MenuButton';
 
 export default function MenuToolbar() {
-  const menus = useRef([]);
-  const [menuIndex, setMenuIndex] = useState(null);
-
-  const inputEl = useRef(null);
-  const { doc, lines, results, setDoc } = useCalc();
-  const { format } = useFormatter();
-  const [file, setFile] = useState(null);
+  const menus = useRef<HTMLElement[]>([]);
+  const [menuIndex, setMenuIndex] = useState<number | null>(null);
+  const inputEl = useRef<HTMLInputElement | null>(null);
+  const { doc, lines, results, setDoc } = useCalc() as CalcContextType; // make sure to define useCalc() types
+  const { format } = useFormatter(); // make sure to define useFormatter() types
+  const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
     let fileReader,

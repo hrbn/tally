@@ -3,13 +3,13 @@ import useFormatter from './format';
 import usePreprocessor from './preprocess';
 import { useCalc } from '../context';
 
-const useEvaluator = () => {
+const useEvaluator = (): { evaluate: () => void; } => {
   const { format, defaultFormatterSettings } = useFormatter();
   const { preprocess } = usePreprocessor();
   const formatterSettings = defaultFormatterSettings();
   const { math, lines, results, setResults } = useCalc();
 
-  const updateResults = (k, v) => {
+  const updateResults = (k: number, v: any) => {
     setResults(new Map(results.set(k, v)));
   };
 
@@ -24,10 +24,9 @@ const useEvaluator = () => {
       if (trimmed.match(/\bline(\d+)\b/)) {
         try {
           trimmed = trimmed.replace(/\bline(\d+)\b/g, (match, p1) => {
-            return `(${results.get(Number(p1 - 1))})`;
+            return `(${ results.get(Number(p1) - 1) })`;
           });
         } catch (e) {
-          // return updateResults(lineNumber, 'Error.');
           return updateResults(lineNumber, null);
         }
       }
@@ -50,11 +49,6 @@ const useEvaluator = () => {
             return updateResults(lineNumber, null);
           }
         } catch (error) {
-          // if (error instanceof TypeError) {
-          //   // return updateResults(lineNumber, `TypeError.`);
-          //   return updateResults(lineNumber, null);
-          // }
-          // return updateResults(lineNumber, `Error.`);
           return updateResults(lineNumber, null);
         }
       }
@@ -62,7 +56,7 @@ const useEvaluator = () => {
     });
   }
 
-  function aggregate(line, lineNumber) {
+  function aggregate(line: string, lineNumber: number): string {
     const aggregationPattern = /\b(sum|total|avg|average|mean)(?!\()/;
     const averagePattern = /\b(avg|average|mean)(?!\()/;
     line = line.trim();
@@ -71,7 +65,7 @@ const useEvaluator = () => {
       const settingsClone = { ...formatterSettings };
       settingsClone.displayCommas = false;
       let aggregateStr = '';
-      let datapoints = [];
+      let datapoints: string[] = [];
       for (let thisLine = lineNumber - 1; thisLine >= 0; thisLine--) {
         let result = results.get(thisLine);
         if (result === undefined || result === null || aggregationPattern.test(lines[thisLine].trim())) {
@@ -84,15 +78,16 @@ const useEvaluator = () => {
         datapoints.push(format(result, settingsClone));
       }
       if (averagePattern.test(line)) {
-        aggregateStr = `${datapoints.join('+')} / ${datapoints.length}`;
+        aggregateStr = `${ datapoints.join('+') } / ${ datapoints.length }`;
       } else {
-        aggregateStr = `${datapoints.join('+')}`;
+        aggregateStr = `${ datapoints.join('+') }`;
       }
-      return line.replace(aggregationPattern, `(${aggregateStr})`);
+      return line.replace(aggregationPattern, `(${ aggregateStr })`);
     }
     return line;
   }
 
   return { evaluate };
 };
+
 export default useEvaluator;

@@ -1,9 +1,7 @@
-// CodeMirror streaming language parser for Math.js syntax.
-
 import sortedKeywords, { units, functions, constants, builtins, operatorKeywords } from '../data/keywords';
 
-function words(array) {
-  var keys = {};
+function words(array: string[]): Record<string, boolean> {
+  var keys: Record<string, boolean> = {};
   for (var i = 0; i < array.length; ++i) {
     keys[array[i]] = true;
   }
@@ -18,7 +16,7 @@ var Builtins = words(builtins);
 
 var isOperatorChar = /[+\-*&=<>/:^%!]/;
 
-function tokenBase(stream, state) {
+function tokenBase(stream: any, state: any): string | null {
   var ch = stream.next();
   if (ch == '#' || (ch == '/' && stream.eat('/'))) {
     stream.skipToEnd();
@@ -66,7 +64,7 @@ function tokenBase(stream, state) {
   return 'variable';
 }
 
-function tokenString(quote) {
+function tokenString(quote: string): (stream: any, state: any) => string {
   return function (stream, state) {
     var escaped = false,
       next,
@@ -83,15 +81,13 @@ function tokenString(quote) {
   };
 }
 
-// Interface
-
 export const mathjs = {
   name: 'mathjs',
-  startState: function () {
+  startState: function (): { tokenize: null; } {
     return { tokenize: null };
   },
 
-  token: function (stream, state) {
+  token: function (stream: any, state: any): string | null {
     if (stream.eatSpace()) return null;
     var style = (state.tokenize || tokenBase)(stream, state);
     if (style == 'comment' || style == 'meta') return style;

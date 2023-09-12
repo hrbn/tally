@@ -1,0 +1,23 @@
+{
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "compilerOptions": {
+    "lib": [
+      "es2021",
+      "dom"
+    ],
+    "module": "esnext",
+    "target": "esnext",
+    "jsx": "preserve",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "noUncheckedIndexedAccess": true
+  }
+}
