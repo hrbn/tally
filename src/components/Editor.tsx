@@ -1,19 +1,24 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, FC } from 'react';
 import { useCalc } from '../context';
 import CodeMirror from '@uiw/react-codemirror';
-import { EditorView } from '@codemirror/view';
+import { EditorView, ViewUpdate } from '@codemirror/view';
 import useResultPlugin from '../hooks/results';
 import { monokai } from '../helpers/monokai';
 
 import { StreamLanguage } from '@codemirror/language';
 import Box from '@mui/joy/Box';
+import { BoxProps } from '@mui/joy';
 
 import { mathjs } from '../helpers/syntax';
 import useEvaluator from '../hooks/evaluate';
 
-export default function Editor(props) {
+interface EditorProps extends BoxProps {
+  // Define additional props here if needed
+}
+
+const Editor: FC<EditorProps> = (props) => {
   // eslint-disable-next-line no-unused-vars
-  const [currentLine, setCurrentLine] = useState();
+  const [currentLine, setCurrentLine] = useState<number | null>(null);
   const { doc, lines, setDoc, setLines } = useCalc();
   const { evaluate } = useEvaluator();
 
@@ -24,7 +29,7 @@ export default function Editor(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lines]);
 
-  const onChange = (value, viewUpdate) => {
+  const onChange = (value: string, viewUpdate: ViewUpdate) => {
     setDoc(value);
     setLines(Array.from(viewUpdate.state.doc.iterLines()));
 
@@ -34,7 +39,7 @@ export default function Editor(props) {
     setCurrentLine(cursorLine);
   };
 
-  const onUpdate = useCallback((viewUpdate) => {
+  const onUpdate = useCallback((viewUpdate: ViewUpdate) => {
     const cursorLine = viewUpdate.state.doc.lineAt(viewUpdate.state.selection.ranges[0].from).number;
     setCurrentLine(cursorLine);
   }, []);
@@ -63,4 +68,6 @@ export default function Editor(props) {
       />
     </Box>
   );
-}
+};
+
+export default Editor;

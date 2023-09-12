@@ -1,7 +1,7 @@
 import * as mathjs from 'mathjs';
 import { fetchExchangeRates } from '../data/currency';
 
-export const Maths = async () => {
+export const Maths = async (): Promise<mathjs.MathJsStatic> => {
   const exchangeRates = await fetchExchangeRates();
 
   const config = {
@@ -14,10 +14,10 @@ export const Maths = async () => {
 
   const addDate = math.factory('add', ['typed'], ({ typed }) => {
     return typed('add', {
-      'Date, Unit': function (a, b) {
+      'Date, Unit': function (a: Date, b: mathjs.Unit) {
         return new Date(a.getTime() + b.toNumber('ms'));
       },
-      'Unit, Date': function (a, b) {
+      'Unit, Date': function (a: mathjs.Unit, b: Date) {
         return new Date(a.toNumber('ms') + b.getTime());
       }
     });
@@ -25,14 +25,15 @@ export const Maths = async () => {
 
   const subtractDate = math.factory('subtract', ['typed'], ({ typed }) => {
     return typed('subtract', {
-      'Date, Unit': function (a, b) {
+      'Date, Unit': function (a: Date, b: mathjs.Unit) {
         return new Date(a.getTime() - b.toNumber('ms'));
       },
-      'Date, Date': function (a, b) {
+      'Date, Date': function (a: Date, b: Date) {
         return math.unit(a.getTime() - b.getTime(), 'ms').to('s');
       }
     });
   });
+
   math.import([addDate, subtractDate], {});
   math.import(
     {
@@ -41,6 +42,7 @@ export const Maths = async () => {
     },
     {}
   );
+
   math.createUnit('tps');
   math.createUnit('pixel', {
     aliases: ['pixels', 'px'],
@@ -79,7 +81,7 @@ export const Maths = async () => {
     .filter((currency) => currency !== exchangeRates.base)
     .forEach((currency) => {
       math.createUnit(currency, {
-        definition: math.unit(`${1 / exchangeRates.rates[currency]}${exchangeRates.base}`),
+        definition: math.unit(`${ 1 / exchangeRates.rates[currency] }${ exchangeRates.base }`),
         aliases: [doNotAlias.includes(currency.toLowerCase()) ? '' : currency.toLowerCase()]
       });
       loaded += 1;
@@ -107,7 +109,7 @@ export const Maths = async () => {
   return math;
 };
 
-export function defaultScope() {
+export function defaultScope(): Record<string, Date> {
   let yesterday = today();
   yesterday.setDate(yesterday.getDate() - 1);
   let tomorrow = today();
@@ -121,7 +123,8 @@ export function defaultScope() {
     tomorrow: tomorrow
   };
 }
-function today() {
+
+function today(): Date {
   let today = new Date();
   today.setHours(0);
   today.setMinutes(0);
@@ -129,7 +132,8 @@ function today() {
   today.setMilliseconds(0);
   return today;
 }
-function parseDate(input) {
+
+function parseDate(input: number | string): Date {
   let inputAsString = input.toString();
   if (isNumber(inputAsString)) {
     if (inputAsString.length < 12) {
@@ -139,22 +143,25 @@ function parseDate(input) {
   }
   return new Date(inputAsString);
 }
-function isNumber(value) {
+
+function isNumber(value: string | null): boolean {
   return value != null && value !== '' && !isNaN(Number(value.toString()));
 }
-function hexToChar(input) {
+
+function hexToChar(input: string): string {
   const hexes = input.match(/.{1,4}/g) || [];
-  var string = '';
-  for (var hex of hexes) {
+  let string = '';
+  for (const hex of hexes) {
     string += String.fromCharCode(parseInt(hex, 16));
   }
   return string;
 }
-function charToHex(input) {
-  var result = '';
-  for (var index = 0; index < input.length; index++) {
-    var hex = input.charCodeAt(index).toString(16);
-    result += `000${hex}`.slice(-4);
+
+function charToHex(input: string): string {
+  let result = '';
+  for (let index = 0; index < input.length; index++) {
+    const hex = input.charCodeAt(index).toString(16);
+    result += `000${ hex }`.slice(-4);
   }
   return result.toUpperCase();
 }

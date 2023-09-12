@@ -3,8 +3,8 @@
  */
 import { currencySymbols } from '../data/currency';
 
-const usePreprocessor = () => {
-  function preprocess(text) {
+const usePreprocessor = (): { preprocess: (text: string) => string; } => {
+  function preprocess(text: string): string {
     if (/(?<=\d)k\b/.test(text)) {
       text = text.replace(/(?<=\d)k\b/g, '000');
     }
@@ -31,17 +31,17 @@ const usePreprocessor = () => {
 
     // Use currency codes instead of symbols
     Object.entries(currencySymbols).forEach(([code, symbol]) => {
-      const removeRegex = new RegExp(`\\${symbol}([\\d\\.]+\\s*[A-Za-z]{3})`, 'g');
+      const removeRegex = new RegExp(`\\${ symbol }([\\d\\.]+\\s*[A-Za-z]{3})`, 'g');
       if (removeRegex.test(text)) {
         text = text.replace(removeRegex, '$1');
       }
-      const replaceRegex = new RegExp(`\\${symbol}([\\d\\.\\,]+)(?=([^\\d\\.\\,A-Z]|$))(?!\\b\\s*[A-Za-z]{3})`, 'g');
+      const replaceRegex = new RegExp(`\\${ symbol }([\\d\\.\\,]+)(?=([^\\d\\.\\,A-Z]|$))(?!\\b\\s*[A-Za-z]{3})`, 'g');
       if (replaceRegex.test(text)) {
-        text = text.replace(replaceRegex, `$1 ${code}`);
+        text = text.replace(replaceRegex, `$1 ${ code }`);
       }
-      const inRegex = new RegExp(`\\bin\\s+\\${symbol}`);
+      const inRegex = new RegExp(`\\bin\\s+\\${ symbol }`);
       if (inRegex.test(text)) {
-        text = text.replace(inRegex, `in ${code}`);
+        text = text.replace(inRegex, `in ${ code }`);
       }
     });
 

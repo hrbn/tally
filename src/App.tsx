@@ -1,10 +1,8 @@
 import React from 'react';
 import { CalcProvider } from './context';
-
 import Editor from './components/Editor';
 import AppMenuBar from './components/AppMenuBar';
 import { Toaster } from 'react-hot-toast';
-
 import CssBaseline from '@mui/joy/CssBaseline';
 
 function Clipboard() {
