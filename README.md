@@ -4,7 +4,7 @@ A notepad calculator PWA with instant calculations as you type.
 
 ## Features
 
-- Calculator: Evaluates mathematical expressions, from basic arithmetic to more advanced operations like logarithms, trigonometry, and any other function from the Math.js library
+- Offers an exstensive  basic arithmeticEvaluates mathematical expressions using the Math.js expression parser, providing an extensive set 
 - Unit conversions: Convert between units of measurement and perform calulations on items with different units
 - Currency conversions: Convert between currencies, including crypto, using up-to-date exchange rates
 - Variables: Define variables and use them throughout your document
@@ -24,9 +24,9 @@ To run locally, follow these steps:
 ## Technology Stack
 
 - TypeScript
-- Vite.js
-- React.js
-- MUI
+- Vite
+- React
+- MUI Joy UI components
 - CodeMirror 6
 - Math.js
 

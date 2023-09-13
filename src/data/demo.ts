@@ -1,9 +1,11 @@
-const exampleContent = `### Examples ###
+const demoText = `### Demo ###
 
 1.2 / (3.3 + 1.7)
 3M / 6k
 5 % 2
 total
+
+line4 * 22
 
 # Unit conversions
 a = 1.7ft + 25.3 cm
@@ -19,9 +21,11 @@ $2000 to btc
 $6 in nickels
 
 # Variables
-height = 6 feet
-width = 30 inches
-width + height in meters
+width = 6 feet
+length = 30 inches
+height = 45 cm
+width * length * height in gallons
+width * length
 
 # Algebra
 f = parse('2x + x')
@@ -37,8 +41,7 @@ derivative("2x^2 + 3x + 4", "x")
 # Comments
 last + 7 // inline comments
 
-# Functions 
-# [https://mathjs.org/docs/index.html]
+# Functions (see mathjs.org/docs)
 round(pi, 5)
 log(10000, 10)
 sqrt(-4)
@@ -51,11 +54,22 @@ today - 3 weeks
 now + 36 hours - 2 days
 yesterday - 1 year
 
-line39
-line30
+ladle = 6 tablespoons
+gravyBoat = 5 ladle
+3 gravyBoat in cups
+
+anArray = [[2, 0], [-1, 3]]
+aMatrix = matrix([[7, 1], [-2, 3]])
+multiply(anArray, aMatrix)
+aMatrix * 2
+
+[2, 3, 4] - 3
+
+add(aMatrix, 2)
+
+det(aMatrix)
+det(anArray)
 sum
-avg
+avg`;
 
-[2, 3, 4] - 3`;
-
-export default exampleContent;
+export default demoText;

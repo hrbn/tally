@@ -9,9 +9,8 @@ import Typography, { typographyClasses } from '@mui/joy/Typography';
 import toast from 'react-hot-toast';
 import { useCalc } from '../context';
 import useFormatter from '../hooks/format';
-import exampleContent from '../data/example';
+import demoContent from '../data/demo';
 
-// Define the types for props, state or any other variables that you use
 interface MenuButtonProps {
   children: React.ReactNode;
   menu: React.ReactElement;
@@ -21,7 +20,6 @@ interface MenuButtonProps {
   // Add any other props you expect here
 }
 
-// Define any state or custom hook types
 type CalcContextType = {
   doc: string;
   lines: string[];
@@ -80,7 +78,7 @@ const MenuButton = forwardRef<HTMLElement, MenuButtonProps>(({ children, menu, o
 
   return (
     <>
-      <ListItemButton {...props} ref={combinedRef} role="menuitem" variant={open ? 'soft' : 'plain'} color="neutral" aria-haspopup="menu" aria-expanded={open ? 'true' : undefined} aria-controls={open ? `toolbar-example-menu-${children}` : undefined} onClick={onOpen} onKeyDown={handleButtonKeyDown}>
+      <ListItemButton {...props} ref={combinedRef} role="menuitem" variant={open ? 'soft' : 'plain'} color="neutral" aria-haspopup="menu" aria-expanded={open ? 'true' : undefined} aria-controls={open ? `toolbar-demo-menu-${children}` : undefined} onClick={onOpen} onKeyDown={handleButtonKeyDown}>
         {children}
       </ListItemButton>
       {cloneElement(menu, {
@@ -89,7 +87,7 @@ const MenuButton = forwardRef<HTMLElement, MenuButtonProps>(({ children, menu, o
         anchorEl: buttonRef.current,
         slotProps: {
           listbox: {
-            id: `toolbar-example-menu-${children}`,
+            id: `toolbar-demo-menu-${children}`,
             'aria-label': children
           }
         },
@@ -151,12 +149,12 @@ export default function MenuToolbar() {
   };
 
   const DownloadFileResults = () => {
-    const docWithResults = [...results.values()].map((v, i) => (v === null ? `${lines[i]}` : `${lines[i]} = ${format(v)}`)).join('\n');
+    const docWithResults = [...results.values()].map((v: string, i: string) => (v === null ? `${lines[i]}` : `${lines[i]} = ${format(v)}`)).join('\n');
     saveToFile(docWithResults);
   };
 
   const CopyFileResults = () => {
-    const docWithResults = [...results.values()].map((v, i) => (v === null ? `${lines[i]}` : `${lines[i]} = ${format(v)}`)).join('\n');
+    const docWithResults = [...results.values()].map((v: string, i: string) => (v === null ? `${lines[i]}` : `${lines[i]} = ${format(v)}`)).join('\n');
     copyTextToClipboard(docWithResults);
     toast('Copied file with results');
   };
@@ -165,16 +163,16 @@ export default function MenuToolbar() {
     inputEl.current.click();
   };
 
-  const OpenExampleText = () => {
-    setDoc(exampleContent);
+  const OpenDemoText = () => {
+    setDoc(demoContent);
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
     setFile(files[0]);
   };
 
-  const renderShortcut = (text) => (
+  const renderShortcut = (text: string) => (
     <Typography level="body2" textColor="text.tertiary" ml="auto">
       {text}
     </Typography>
@@ -200,7 +198,7 @@ export default function MenuToolbar() {
     }
   };
 
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'ArrowRight') {
       openNextMenu();
     }
@@ -209,7 +207,7 @@ export default function MenuToolbar() {
     }
   };
 
-  const createHandleButtonKeyDown = (index) => (event) => {
+  const createHandleButtonKeyDown = (index: number) => (event: React.KeyboardEvent) => {
     if (event.key === 'ArrowRight') {
       if (index === menus.current.length - 1) {
         menus.current[0]?.focus();
@@ -326,7 +324,7 @@ export default function MenuToolbar() {
               }}
             >
               <MenuItem {...itemProps} onClick={CopyFileResults}>
-                Copy File with Results {renderShortcut('⇧ ⌘ C')}
+                Copy All with Results {renderShortcut('⇧ ⌘ C')}
               </MenuItem>
             </Menu>
           }
@@ -355,8 +353,8 @@ export default function MenuToolbar() {
                 setMenuIndex(null);
               }}
             >
-              <MenuItem {...itemProps} onClick={OpenExampleText}>
-                Open Example Document {renderShortcut('⇧ ⌘ H')}
+              <MenuItem {...itemProps} onClick={OpenDemoText}>
+                View Demo {renderShortcut('⇧ ⌘ H')}
               </MenuItem>
             </Menu>
           }

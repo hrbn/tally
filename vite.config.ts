@@ -59,9 +59,5 @@ export default defineConfig({
   server: {
     open: '/index.html'
   },
-  build: {
-    target: 'esnext',
-    minify: 'terser'
-  },
   publicDir: 'public'
 });
