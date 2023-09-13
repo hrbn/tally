@@ -261,7 +261,9 @@ export default function MenuToolbar() {
       <ListItem>
         <MenuButton
           open={menuIndex === 0}
-          onOpen={() => setMenuIndex(0)}
+          onOpen={() => {
+            setMenuIndex((prevMenuIndex) => (prevMenuIndex === null ? 0 : null));
+          }}
           onKeyDown={createHandleButtonKeyDown(0)}
           onMouseEnter={() => {
             if (typeof menuIndex === 'number') {
@@ -281,10 +283,10 @@ export default function MenuToolbar() {
               <ListItem nested>
                 <List aria-label="Save">
                   <MenuItem {...itemProps} onClick={DownloadFile}>
-                    Save File {renderShortcut('⌘ S')}
+                    Save File
                   </MenuItem>
                   <MenuItem {...itemProps} onClick={DownloadFileResults}>
-                    Save File with Results {renderShortcut('⌥ ⌘ S')}
+                    Save File with Results
                   </MenuItem>
                 </List>
               </ListItem>
@@ -292,7 +294,7 @@ export default function MenuToolbar() {
               <ListItem nested>
                 <List aria-label="Open">
                   <MenuItem {...itemProps} onClick={UploadFile}>
-                    Open File {renderShortcut('⌘ O')}
+                    Open File
                   </MenuItem>
                 </List>
                 <input ref={inputEl} type="file" onChange={handleChange} hidden />
@@ -306,7 +308,9 @@ export default function MenuToolbar() {
       <ListItem>
         <MenuButton
           open={menuIndex === 1}
-          onOpen={() => setMenuIndex(1)}
+          onOpen={() => {
+            setMenuIndex((prevMenuIndex) => (prevMenuIndex === null ? 1 : null));
+          }}
           onKeyDown={createHandleButtonKeyDown(1)}
           onMouseEnter={() => {
             if (typeof menuIndex === 'number') {
@@ -324,7 +328,7 @@ export default function MenuToolbar() {
               }}
             >
               <MenuItem {...itemProps} onClick={CopyFileResults}>
-                Copy All with Results {renderShortcut('⇧ ⌘ C')}
+                Copy All with Results
               </MenuItem>
             </Menu>
           }
@@ -336,7 +340,9 @@ export default function MenuToolbar() {
       <ListItem>
         <MenuButton
           open={menuIndex === 2}
-          onOpen={() => setMenuIndex(2)}
+          onOpen={() => {
+            setMenuIndex((prevMenuIndex) => (prevMenuIndex === null ? 2 : null));
+          }}
           onKeyDown={createHandleButtonKeyDown(2)}
           onMouseEnter={() => {
             if (typeof menuIndex === 'number') {
@@ -354,7 +360,7 @@ export default function MenuToolbar() {
               }}
             >
               <MenuItem {...itemProps} onClick={OpenDemoText}>
-                View Demo {renderShortcut('⇧ ⌘ H')}
+                View Demo
               </MenuItem>
             </Menu>
           }
