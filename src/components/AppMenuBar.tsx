@@ -6,19 +6,20 @@ import ListItem from '@mui/joy/ListItem';
 import ListItemButton from '@mui/joy/ListItemButton';
 import ListDivider from '@mui/joy/ListDivider';
 import Typography, { typographyClasses } from '@mui/joy/Typography';
+import Dropdown, { DropdownProps } from '@mui/joy/Dropdown';
+import MenuButton from '@mui/joy/MenuButton';
+import { Theme } from '@mui/joy';
 import toast from 'react-hot-toast';
 import { useCalc } from '../context';
 import useFormatter from '../hooks/format';
 import demoContent from '../data/demo';
 
-interface MenuButtonProps {
-  children: React.ReactNode;
-  menu: React.ReactElement;
-  open: boolean;
-  onOpen: (event: KeyboardEvent | MouseEvent) => void;
-  onKeyDown: (event: KeyboardEvent) => void;
-  // Add any other props you expect here
-}
+type MenuBarButtonProps = Pick<DropdownProps, 'children' | 'open'> & {
+  onOpen: DropdownProps['onOpenChange'];
+  onKeyDown: React.KeyboardEventHandler;
+  menu: JSX.Element;
+  onMouseEnter: React.MouseEventHandler;
+};
 
 type CalcContextType = {
   doc: string;
@@ -27,7 +28,7 @@ type CalcContextType = {
   setDoc: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const saveToFile = (content) => {
+const saveToFile = (content: string) => {
   const element = document.createElement('a');
   const file = new Blob([content], { type: 'text/plain' });
   element.href = URL.createObjectURL(file);
@@ -37,7 +38,7 @@ const saveToFile = (content) => {
   document.body.removeChild(element);
 };
 
-const copyTextToClipboard = async (text) => {
+const copyTextToClipboard = async (text: string) => {
   if ('clipboard' in navigator) {
     return await navigator.clipboard.writeText(text);
   } else {
@@ -53,56 +54,31 @@ const TallyIcon = (props) => {
   );
 };
 
-const MenuButton = forwardRef<HTMLElement, MenuButtonProps>(({ children, menu, open, onOpen, onKeyDown, ...props }, ref) => {
-  const buttonRef = useRef(null);
-  const menuActions = useRef(null);
-  const combinedRef = useMemo(() => {
-    return (instance) => {
-      if (instance) {
-        ref(instance);
-        buttonRef.current = instance;
-      }
-    };
-  }, [buttonRef, ref]);
-
-  const handleButtonKeyDown = (event) => {
-    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-      event.preventDefault();
-      onOpen(event);
-      if (event.key === 'ArrowUp') {
-        menuActions.current?.highlightLastItem();
-      }
-    }
-    onKeyDown(event);
-  };
-
+const MenuBarButton = React.forwardRef(({ children, menu, open, onOpen, onKeyDown, ...props }: MenuBarButtonProps, ref: React.ForwardedRef<HTMLButtonElement>) => {
   return (
-    <>
-      <ListItemButton {...props} ref={combinedRef} role="menuitem" variant={open ? 'soft' : 'plain'} color="neutral" aria-haspopup="menu" aria-expanded={open ? 'true' : undefined} aria-controls={open ? `toolbar-demo-menu-${children}` : undefined} onClick={onOpen} onKeyDown={handleButtonKeyDown}>
+    <Dropdown open={open} onOpenChange={onOpen}>
+      <MenuButton {...props} slots={{ root: ListItemButton }} ref={ref} role="menuitem" variant="plain">
         {children}
-      </ListItemButton>
-      {cloneElement(menu, {
-        open,
-        actions: menuActions,
-        anchorEl: buttonRef.current,
+      </MenuButton>
+      {React.cloneElement(menu, {
         slotProps: {
           listbox: {
-            id: `toolbar-demo-menu-${children}`,
+            id: `toolbar-menu-${children}`,
             'aria-label': children
           }
         },
         placement: 'bottom-start',
         disablePortal: false,
         variant: 'soft',
-        sx: (theme) => ({
+        sx: (theme: Theme) => ({
           width: 288,
           boxShadow: '0 2px 8px 0px rgba(0 0 0 / 0.38)',
           '--List-padding': 'var(--ListDivider-gap)',
           '--ListItem-minHeight': '32px',
-          [`& .${menuItemClasses.root}`]: {
+          [`&& .${menuItemClasses.root}`]: {
             transition: 'none',
             '&:hover': {
-              ...theme.variants.solid.primary,
+              ...theme.variants.soft.secondary,
               [`& .${typographyClasses.root}`]: {
                 color: 'inherit'
               }
@@ -110,17 +86,17 @@ const MenuButton = forwardRef<HTMLElement, MenuButtonProps>(({ children, menu, o
           }
         })
       })}
-    </>
+    </Dropdown>
   );
 });
-MenuButton.displayName = 'MenuButton';
+MenuBarButton.displayName = 'MenuBarButton';
 
 export default function MenuToolbar() {
   const menus = useRef<HTMLElement[]>([]);
   const [menuIndex, setMenuIndex] = useState<number | null>(null);
   const inputEl = useRef<HTMLInputElement | null>(null);
-  const { doc, lines, results, setDoc } = useCalc() as CalcContextType; // make sure to define useCalc() types
-  const { format } = useFormatter(); // make sure to define useFormatter() types
+  const { doc, lines, results, setDoc } = useCalc() as CalcContextType;
+  const { format } = useFormatter();
   const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
@@ -259,7 +235,7 @@ export default function MenuToolbar() {
         </Typography>
       </ListItem>
       <ListItem>
-        <MenuButton
+        <MenuBarButton
           open={menuIndex === 0}
           onOpen={() => {
             setMenuIndex((prevMenuIndex) => (prevMenuIndex === null ? 0 : null));
@@ -277,7 +253,6 @@ export default function MenuToolbar() {
             <Menu
               onClose={() => {
                 menus.current[0]?.focus();
-                setMenuIndex(null);
               }}
             >
               <ListItem nested>
@@ -303,10 +278,10 @@ export default function MenuToolbar() {
           }
         >
           File
-        </MenuButton>
+        </MenuBarButton>
       </ListItem>
       <ListItem>
-        <MenuButton
+        <MenuBarButton
           open={menuIndex === 1}
           onOpen={() => {
             setMenuIndex((prevMenuIndex) => (prevMenuIndex === null ? 1 : null));
@@ -334,11 +309,11 @@ export default function MenuToolbar() {
           }
         >
           Edit
-        </MenuButton>
+        </MenuBarButton>
       </ListItem>
 
       <ListItem>
-        <MenuButton
+        <MenuBarButton
           open={menuIndex === 2}
           onOpen={() => {
             setMenuIndex((prevMenuIndex) => (prevMenuIndex === null ? 2 : null));
@@ -366,7 +341,7 @@ export default function MenuToolbar() {
           }
         >
           Help
-        </MenuButton>
+        </MenuBarButton>
       </ListItem>
     </List>
   );
