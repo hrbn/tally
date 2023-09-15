@@ -1,25 +1,17 @@
 import React, { forwardRef, cloneElement, useMemo, useEffect, useState, useRef, Ref, ChangeEvent, KeyboardEvent } from 'react';
-import Menu from '@mui/joy/Menu';
-import MenuItem, { menuItemClasses } from '@mui/joy/MenuItem';
-import List from '@mui/joy/List';
-import ListItem from '@mui/joy/ListItem';
-import ListItemButton from '@mui/joy/ListItemButton';
-import ListDivider from '@mui/joy/ListDivider';
-import Typography, { typographyClasses } from '@mui/joy/Typography';
-import Dropdown, { DropdownProps } from '@mui/joy/Dropdown';
-import MenuButton from '@mui/joy/MenuButton';
-import { Theme } from '@mui/joy';
+import { CssVarsProvider, useColorScheme } from '@mui/joy/styles';
+import Box, { BoxProps } from '@mui/joy/Box';
+
+import SvgIcon, { SvgIconProps } from '@mui/joy/SvgIcon';
+import Typography from '@mui/joy/Typography';
+import IconButton from '@mui/joy/IconButton';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+
 import toast from 'react-hot-toast';
+import Menu from './Menu';
 import { useCalc } from '../context';
 import useFormatter from '../hooks/format';
 import demoContent from '../data/demo';
-
-type MenuBarButtonProps = Pick<DropdownProps, 'children' | 'open'> & {
-  onOpen: DropdownProps['onOpenChange'];
-  onKeyDown: React.KeyboardEventHandler;
-  menu: JSX.Element;
-  onMouseEnter: React.MouseEventHandler;
-};
 
 type CalcContextType = {
   doc: string;
@@ -46,54 +38,45 @@ const copyTextToClipboard = async (text: string) => {
   }
 };
 
-const TallyIcon = (props) => {
+const TallyIcon = (props: SvgIconProps) => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="1em" height="1em" {...props}>
-      <path fill="currentColor" d="M160 32V64 278.5l64-22.6V64 32h64V64 233.4l64-22.6V64 32h64V64 188.2l64-22.6V64 32h64V64v79l37.4-13.2 30.2-10.7 21.3 60.4-30.2 10.7L544 210.9V448v32H480V448 233.5l-64 22.6V448v32H352V448 278.6l-64 22.6V448v32H224V448 323.8l-64 22.6V448v32H96V448 369L58.6 382.2 28.5 392.8 7.2 332.5l30.2-10.6L96 301.1V64 32h64z" />
-    </svg>
+    <SvgIcon>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
+        <path d="M6,3.53v9.32L8.37,12V3.53h2.42v7.62l2.42-.86V3.53h2.42V9.44l2.42-.86V3.53h2.42v4.2l1.41-.5L23,6.83l.81,2.28-1.15.4-2.21.79V20.47H18.05V11.15L15.63,12v8.47H13.21V12.85l-2.42.86v6.76H8.37V14.56L6,15.42v5H3.53v-4.2l-1.41.5L1,17.17.17,14.89l1.15-.4,2.21-.79V3.53Z" />
+      </svg>
+    </SvgIcon>
   );
 };
 
-const MenuBarButton = React.forwardRef(({ children, menu, open, onOpen, onKeyDown, ...props }: MenuBarButtonProps, ref: React.ForwardedRef<HTMLButtonElement>) => {
+const Header = (props: BoxProps) => {
   return (
-    <Dropdown open={open} onOpenChange={onOpen}>
-      <MenuButton {...props} slots={{ root: ListItemButton }} ref={ref} role="menuitem" variant="plain">
-        {children}
-      </MenuButton>
-      {React.cloneElement(menu, {
-        slotProps: {
-          listbox: {
-            id: `toolbar-menu-${children}`,
-            'aria-label': children
-          }
+    <Box
+      component="header"
+      className="Header"
+      {...props}
+      sx={[
+        {
+          p: 2,
+          gap: 2,
+          bgcolor: 'background.level1',
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gridColumn: '1 / -1',
+          // borderBottom: '1px solid',
+          // borderColor: 'divider',
+          position: 'sticky',
+          top: 0,
+          zIndex: 1100
         },
-        placement: 'bottom-start',
-        disablePortal: false,
-        variant: 'soft',
-        sx: (theme: Theme) => ({
-          width: 288,
-          boxShadow: '0 2px 8px 0px rgba(0 0 0 / 0.38)',
-          '--List-padding': 'var(--ListDivider-gap)',
-          '--ListItem-minHeight': '32px',
-          [`&& .${menuItemClasses.root}`]: {
-            transition: 'none',
-            '&:hover': {
-              ...theme.variants.soft.secondary,
-              [`& .${typographyClasses.root}`]: {
-                color: 'inherit'
-              }
-            }
-          }
-        })
-      })}
-    </Dropdown>
+        ...(Array.isArray(props.sx) ? props.sx : [props.sx])
+      ]}
+    />
   );
-});
-MenuBarButton.displayName = 'MenuBarButton';
+};
 
 export default function MenuToolbar() {
-  const menus = useRef<HTMLElement[]>([]);
-  const [menuIndex, setMenuIndex] = useState<number | null>(null);
   const inputEl = useRef<HTMLInputElement | null>(null);
   const { doc, lines, results, setDoc } = useCalc() as CalcContextType;
   const { format } = useFormatter();
@@ -148,83 +131,21 @@ export default function MenuToolbar() {
     setFile(files[0]);
   };
 
-  const renderShortcut = (text: string) => (
-    <Typography level="body2" textColor="text.tertiary" ml="auto">
-      {text}
-    </Typography>
-  );
-
-  const openNextMenu = () => {
-    if (typeof menuIndex === 'number') {
-      if (menuIndex === menus.current.length - 1) {
-        setMenuIndex(0);
-      } else {
-        setMenuIndex(menuIndex + 1);
-      }
-    }
-  };
-
-  const openPreviousMenu = () => {
-    if (typeof menuIndex === 'number') {
-      if (menuIndex === 0) {
-        setMenuIndex(menus.current.length - 1);
-      } else {
-        setMenuIndex(menuIndex - 1);
-      }
-    }
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'ArrowRight') {
-      openNextMenu();
-    }
-    if (event.key === 'ArrowLeft') {
-      openPreviousMenu();
-    }
-  };
-
-  const createHandleButtonKeyDown = (index: number) => (event: React.KeyboardEvent) => {
-    if (event.key === 'ArrowRight') {
-      if (index === menus.current.length - 1) {
-        menus.current[0]?.focus();
-      } else {
-        menus.current[index + 1]?.focus();
-      }
-    }
-    if (event.key === 'ArrowLeft') {
-      if (index === 0) {
-        menus.current[menus.current.length]?.focus();
-      } else {
-        menus.current[index - 1]?.focus();
-      }
-    }
-  };
-
-  const itemProps = {
-    onClick: () => setMenuIndex(null),
-    onKeyDown: handleKeyDown
-  };
-
   return (
-    <List
-      orientation="horizontal"
-      aria-label="application menu bar"
-      role="menubar"
-      sx={{
-        bgcolor: 'background.level1',
-        px: 2,
-        borderRadius: '4px',
-        width: '100%',
-        '--ListItem-radius': '8px'
-      }}
-    >
-      <ListItem
+    <Header>
+      <Box
         sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 1.5,
           color: '#6a9955'
         }}
       >
         <TallyIcon />
         <Typography
+          component="h1"
+          fontWeight="xl"
           sx={{
             marginLeft: '0.5em',
             marginRight: '1em',
@@ -233,116 +154,46 @@ export default function MenuToolbar() {
         >
           TALLY
         </Typography>
-      </ListItem>
-      <ListItem>
-        <MenuBarButton
-          open={menuIndex === 0}
-          onOpen={() => {
-            setMenuIndex((prevMenuIndex) => (prevMenuIndex === null ? 0 : null));
-          }}
-          onKeyDown={createHandleButtonKeyDown(0)}
-          onMouseEnter={() => {
-            if (typeof menuIndex === 'number') {
-              setMenuIndex(0);
-            }
-          }}
-          ref={(instance) => {
-            menus.current[0] = instance;
-          }}
-          menu={
-            <Menu
-              onClose={() => {
-                menus.current[0]?.focus();
-              }}
-            >
-              <ListItem nested>
-                <List aria-label="Save">
-                  <MenuItem {...itemProps} onClick={DownloadFile}>
-                    Save File
-                  </MenuItem>
-                  <MenuItem {...itemProps} onClick={DownloadFileResults}>
-                    Save File with Results
-                  </MenuItem>
-                </List>
-              </ListItem>
-              <ListDivider />
-              <ListItem nested>
-                <List aria-label="Open">
-                  <MenuItem {...itemProps} onClick={UploadFile}>
-                    Open File
-                  </MenuItem>
-                </List>
-                <input ref={inputEl} type="file" onChange={handleChange} hidden />
-              </ListItem>
-            </Menu>
-          }
-        >
-          File
-        </MenuBarButton>
-      </ListItem>
-      <ListItem>
-        <MenuBarButton
-          open={menuIndex === 1}
-          onOpen={() => {
-            setMenuIndex((prevMenuIndex) => (prevMenuIndex === null ? 1 : null));
-          }}
-          onKeyDown={createHandleButtonKeyDown(1)}
-          onMouseEnter={() => {
-            if (typeof menuIndex === 'number') {
-              setMenuIndex(1);
-            }
-          }}
-          ref={(instance) => {
-            menus.current[1] = instance;
-          }}
-          menu={
-            <Menu
-              onClose={() => {
-                menus.current[1]?.focus();
-                setMenuIndex(null);
-              }}
-            >
-              <MenuItem {...itemProps} onClick={CopyFileResults}>
-                Copy All with Results
-              </MenuItem>
-            </Menu>
-          }
-        >
-          Edit
-        </MenuBarButton>
-      </ListItem>
+      </Box>
 
-      <ListItem>
-        <MenuBarButton
-          open={menuIndex === 2}
-          onOpen={() => {
-            setMenuIndex((prevMenuIndex) => (prevMenuIndex === null ? 2 : null));
-          }}
-          onKeyDown={createHandleButtonKeyDown(2)}
-          onMouseEnter={() => {
-            if (typeof menuIndex === 'number') {
-              setMenuIndex(2);
-            }
-          }}
-          ref={(instance) => {
-            menus.current[2] = instance;
-          }}
-          menu={
-            <Menu
-              onClose={() => {
-                menus.current[2]?.focus();
-                setMenuIndex(null);
-              }}
-            >
-              <MenuItem {...itemProps} onClick={OpenDemoText}>
-                View Demo
-              </MenuItem>
-            </Menu>
+      <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1.5 }}>
+        <Menu
+          id="action-menu"
+          control={
+            <IconButton size="sm" variant="plain" color="neutral" aria-label="Actions" title="Actions">
+              <MoreVertIcon />
+            </IconButton>
           }
-        >
-          Help
-        </MenuBarButton>
-      </ListItem>
-    </List>
+          menus={[
+            {
+              label: 'Export File',
+              action: DownloadFile
+            },
+            {
+              label: 'Export File with Solutions',
+              action: DownloadFileResults
+            },
+            {
+              label: 'Import File',
+              action: UploadFile
+            },
+            {
+              divider: true
+            },
+            {
+              label: 'Copy All',
+              action: CopyFileResults
+            },
+            {
+              divider: true
+            },
+            {
+              label: 'View Demo',
+              action: OpenDemoText
+            }
+          ]}
+        />
+      </Box>
+    </Header>
   );
 }

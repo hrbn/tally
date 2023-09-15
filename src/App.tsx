@@ -4,6 +4,7 @@ import Editor from './components/Editor';
 import AppMenuBar from './components/AppMenuBar';
 import { Toaster } from 'react-hot-toast';
 import CssBaseline from '@mui/joy/CssBaseline';
+import Box, { BoxProps } from '@mui/joy/Box';
 
 function Clipboard() {
   return (
@@ -19,17 +20,22 @@ function App() {
   return (
     <CalcProvider>
       <CssBaseline />
-      <div className="App">
+      <Box
+        className="App"
+        sx={{
+          bgcolor: 'background.level1'
+        }}
+      >
         <AppMenuBar />
         <Editor />
-      </div>
+      </Box>
       <Toaster
         position="bottom-right"
         toastOptions={{
           duration: 3000,
           icon: <Clipboard />,
           style: {
-            background: '#4D495088',
+            background: 'var(--joy-palette-neutral-600, #555E68)',
             color: '#fcfcfa',
             fontSize: '1rem'
           }
