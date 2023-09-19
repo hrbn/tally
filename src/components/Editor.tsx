@@ -52,6 +52,7 @@ const Editor: FC<EditorProps> = (props) => {
 
   const onCreateEditor = () => {
     setLines(doc.split('\n'));
+    // add delay for rendering results on first load
     setTimeout(() => {
       setInit(!init);
     }, 500);
