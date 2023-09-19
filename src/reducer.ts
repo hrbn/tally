@@ -1,11 +1,14 @@
 import { useState } from 'react';
+import { ReactCodeMirrorProps } from '@uiw/react-codemirror';
+
 
 export interface State {
   math: null | string;
   doc: string;
   lines: string[];
   results: Map<string, any>;
-}
+};
+
 
 export const initialState: State = {
   math: null,

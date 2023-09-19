@@ -14,7 +14,7 @@ const useEvaluator = (): { evaluate: () => void; } => {
   };
 
   function evaluate() {
-    setResults(new Map(results.clear()));
+    setResults(new Map(results?.clear()));
     let scope = defaultScope();
     lines.map((line, lineNumber) => {
       let trimmed = line.trim();

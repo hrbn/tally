@@ -1,11 +1,13 @@
 import { createContext, useReducer, useContext, useEffect, ReactNode } from 'react';
+import { ReactCodeMirrorProps } from '@uiw/react-codemirror';
+
 import CalcReducer, { initialState } from './reducer';
 import { Maths } from './components/Maths';
 
 interface CalcState {
   math: null;
   doc: string;
-  lines: never[];
+  lines: string[];
   results: Map<any, any>;
 }
 
@@ -38,7 +40,7 @@ const CalcProvider: React.FC<CalcProviderProps> = ({ children }) => {
     });
   };
 
-  const setLines = (lines: never[]) => {
+  const setLines = (lines: string[]) => {
     dispatch({
       type: 'SET_LINES',
       payload: {

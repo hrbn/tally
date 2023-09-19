@@ -56,9 +56,9 @@ function Menu({ control, menus, id }: { control: React.ReactElement; id: string;
         'aria-haspopup': 'menu'
       })}
       <JoyMenu id={id} placement="bottom-end" actions={menuActions} open={isOpen} onClose={close} anchorEl={buttonElement} sx={{ minWidth: 120, zIndex: 2222, bgcolor: 'background.surface' }}>
-        {menus.map(({ label, active, action, divider, ...item }) => {
+        {menus.map(({ label, active, action, divider, ...item }, index) => {
           if (divider) {
-            return <Divider key={item.id} />;
+            return <Divider key={index} />;
           }
           const onClick = (event: React.MouseEvent<HTMLLIElement>) => {
             if (action) {
@@ -67,19 +67,12 @@ function Menu({ control, menus, id }: { control: React.ReactElement; id: string;
             setOpen(false);
             buttonRef.current!.focus();
           };
-          const menuItem = (
-            <MenuItem selected={active} variant={active ? 'soft' : 'plain'} onClick={onClick} {...item}>
+
+          return (
+            <MenuItem ref={buttonRef} key={index} selected={active} variant={active ? 'soft' : 'plain'} onClick={onClick} {...item}>
               {label}
             </MenuItem>
           );
-          if (item.href) {
-            return (
-              <li key={item.id} role="none">
-                {React.cloneElement(menuItem, { component: 'a' })}
-              </li>
-            );
-          }
-          return React.cloneElement(menuItem, { key: item.id });
         })}
       </JoyMenu>
     </React.Fragment>

@@ -1,10 +1,51 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { CalcProvider } from './context';
 import Editor from './components/Editor';
 import AppMenuBar from './components/AppMenuBar';
+import { CssVarsProvider, extendTheme } from '@mui/joy/styles';
+import { useTheme } from './hooks/theme';
+import * as alls from '@uiw/codemirror-themes-all';
 import { Toaster } from 'react-hot-toast';
 import CssBaseline from '@mui/joy/CssBaseline';
 import Box, { BoxProps } from '@mui/joy/Box';
+
+const getThemeObjects = () => {
+  let themeObjects = {};
+  const defaults = ['dark', 'light']
+    .concat(Object.keys(alls))
+    .filter((item) => typeof alls[item as keyof typeof alls] !== 'function')
+    .filter((item) => /^(defaultSettings)/.test(item as keyof typeof alls))
+    .forEach((item) => {
+      let key = item as keyof typeof alls;
+      key = key.replace(/^(defaultSettings)/, '');
+      key = key.charAt(0).toLowerCase() + key.slice(1);
+      themeObjects[key] = {
+        palette: {
+          background: {
+            default: alls[item]['background']
+          }
+        }
+      };
+    });
+  return themeObjects;
+};
+
+const muiTheme = extendTheme({
+  colorSchemes: getThemeObjects()
+});
+
+const getBackground = (aTheme: string) => {
+  const themeRegex = new RegExp(`${aTheme}$`, 'i');
+  const defaults = ['dark', 'light']
+    .concat(Object.keys(alls))
+    .filter((item) => typeof alls[item as keyof typeof alls] !== 'function')
+    .filter((item) => /^(defaultSettings)/.test(item as keyof typeof alls))
+    .filter((item) => themeRegex.test(item as keyof typeof alls))
+    .map((item) => {
+      return alls[item]['background'];
+    })[0];
+  return defaults;
+};
 
 function Clipboard() {
   return (
@@ -17,31 +58,42 @@ function Clipboard() {
 }
 
 function App() {
+  const { theme, setTheme } = useTheme();
+  const [background, setBackground] = React.useState(getBackground(theme));
+
+  useEffect(() => {
+    setBackground(getBackground(theme));
+  }, [theme]);
+
   return (
-    <CalcProvider>
-      <CssBaseline />
-      <Box
-        className="App"
-        sx={{
-          bgcolor: 'background.level1'
-        }}
-      >
-        <AppMenuBar />
-        <Editor />
-      </Box>
-      <Toaster
-        position="bottom-right"
-        toastOptions={{
-          duration: 3000,
-          icon: <Clipboard />,
-          style: {
-            background: 'var(--joy-palette-neutral-600, #555E68)',
-            color: '#fcfcfa',
-            fontSize: '1rem'
-          }
-        }}
-      />
-    </CalcProvider>
+    <CssVarsProvider theme={muiTheme} defaultMode="system">
+      <CalcProvider>
+        <CssBaseline />
+        <Box
+          className="App"
+          sx={{
+            bgcolor: background,
+            minHeight: '100vh',
+            height: '100%'
+          }}
+        >
+          <AppMenuBar bg={background} />
+          <Editor />
+        </Box>
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            duration: 3000,
+            icon: <Clipboard />,
+            style: {
+              background: 'var(--joy-palette-neutral-600, #555E68)',
+              color: '#fcfcfa',
+              fontSize: '1rem'
+            }
+          }}
+        />
+      </CalcProvider>
+    </CssVarsProvider>
   );
 }
 
