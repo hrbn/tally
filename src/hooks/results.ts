@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 
 const useResultPlugin = (): () => import("@codemirror/state").Extension[] => {
   const { results } = useCalc();
+  console.log("results count: " + results.size);
   const { format } = useFormatter();
 
   const baseTheme = EditorView.baseTheme({
@@ -43,7 +44,7 @@ const useResultPlugin = (): () => import("@codemirror/state").Extension[] => {
       button.setAttribute('aria-hidden', 'true');
       button.className = 'cm-line-result ';
       let box = button.appendChild(document.createElement('span'));
-      let res = results.get(this.line - 1) ? `${ format(results.get(this.line - 1)) }` : null;
+      let res = results && results instanceof Map && results?.get(this.line - 1) ? `${ format(results?.get(this.line - 1)) }` : null;
       box.textContent = res;
       return wrap;
     }

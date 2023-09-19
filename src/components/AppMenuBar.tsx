@@ -1,11 +1,22 @@
 import React, { forwardRef, cloneElement, useMemo, useEffect, useState, useRef, Ref, ChangeEvent, KeyboardEvent } from 'react';
+import CodeMirror, { ReactCodeMirrorProps, BasicSetupOptions } from '@uiw/react-codemirror';
+import { useLocalStorage } from 'usehooks-ts';
+
 import { CssVarsProvider, useColorScheme } from '@mui/joy/styles';
 import Box, { BoxProps } from '@mui/joy/Box';
-
+import Drawer from '@mui/joy/Drawer';
 import SvgIcon, { SvgIconProps } from '@mui/joy/SvgIcon';
 import Typography from '@mui/joy/Typography';
+import Select from '@mui/joy/Select';
+import Option from '@mui/joy/Option';
 import IconButton from '@mui/joy/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import FormControl from '@mui/joy/FormControl';
+import FormLabel from '@mui/joy/FormLabel';
+
+import { useTheme } from '../hooks/theme';
+
+import * as alls from '@uiw/codemirror-themes-all';
 
 import toast from 'react-hot-toast';
 import Menu from './Menu';
@@ -13,11 +24,20 @@ import { useCalc } from '../context';
 import useFormatter from '../hooks/format';
 import demoContent from '../data/demo';
 
+const themeOptions = ['dark', 'light']
+  .concat(Object.keys(alls))
+  .filter((item) => typeof alls[item as keyof typeof alls] !== 'function')
+  .filter((item) => !/^(defaultSettings)/.test(item as keyof typeof alls));
+
 type CalcContextType = {
   doc: string;
   lines: string[];
   results: Map<number, any>;
+  settings: {
+    theme: ReactCodeMirrorProps['theme'];
+  };
   setDoc: React.Dispatch<React.SetStateAction<string>>;
+  setSettings: React.Dispatch<React.SetStateAction<any>>;
 };
 
 const saveToFile = (content: string) => {
@@ -58,14 +78,13 @@ const Header = (props: BoxProps) => {
         {
           p: 2,
           gap: 2,
-          bgcolor: 'background.level1',
+          bgcolor: props.bg,
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
           gridColumn: '1 / -1',
-          // borderBottom: '1px solid',
-          // borderColor: 'divider',
+
           position: 'sticky',
           top: 0,
           zIndex: 1100
@@ -76,11 +95,13 @@ const Header = (props: BoxProps) => {
   );
 };
 
-export default function MenuToolbar() {
+export default function MenuToolbar(props: BoxProps) {
   const inputEl = useRef<HTMLInputElement | null>(null);
-  const { doc, lines, results, setDoc } = useCalc() as CalcContextType;
+  const { doc, lines, results, setDoc, settings, setSettings } = useCalc() as CalcContextType;
   const { format } = useFormatter();
   const [file, setFile] = useState<File | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     let fileReader,
@@ -126,74 +147,110 @@ export default function MenuToolbar() {
     setDoc(demoContent);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { files } = e.target;
-    setFile(files[0]);
+  const handleColorschemeChange = (event: React.SyntheticEvent | null, newValue: string | null) => {
+    // setColorscheme(newValue);
+    setTheme(newValue as ReactCodeMirrorProps['theme']);
+  };
+
+  const toggleDrawer = (isOpen: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+    if (event.type === 'keydown' && ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')) {
+      return;
+    }
+
+    setDrawerOpen(isOpen);
   };
 
   return (
-    <Header>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 1.5,
-          color: '#6a9955'
-        }}
-      >
-        <TallyIcon />
-        <Typography
-          component="h1"
-          fontWeight="xl"
+    <Box>
+      <Header bg={props.bg}>
+        <Box
           sx={{
-            marginLeft: '0.5em',
-            marginRight: '1em',
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 1.5,
             color: '#6a9955'
           }}
         >
-          TALLY
-        </Typography>
-      </Box>
+          <TallyIcon />
+          <Typography
+            component="h1"
+            fontWeight="xl"
+            sx={{
+              marginLeft: '0.5em',
+              marginRight: '1em',
+              color: '#6a9955'
+            }}
+          >
+            TALLY
+          </Typography>
+        </Box>
 
-      <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1.5 }}>
-        <Menu
-          id="action-menu"
-          control={
-            <IconButton size="sm" variant="plain" color="neutral" aria-label="Actions" title="Actions">
-              <MoreVertIcon />
-            </IconButton>
-          }
-          menus={[
-            {
-              label: 'Export File',
-              action: DownloadFile
-            },
-            {
-              label: 'Export File with Solutions',
-              action: DownloadFileResults
-            },
-            {
-              label: 'Import File',
-              action: UploadFile
-            },
-            {
-              divider: true
-            },
-            {
-              label: 'Copy All',
-              action: CopyFileResults
-            },
-            {
-              divider: true
-            },
-            {
-              label: 'View Demo',
-              action: OpenDemoText
+        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1.5 }}>
+          <Menu
+            id="action-menu"
+            control={
+              <IconButton size="sm" variant="plain" color="neutral" aria-label="Actions" title="Actions">
+                <MoreVertIcon />
+              </IconButton>
             }
-          ]}
-        />
-      </Box>
-    </Header>
+            menus={[
+              {
+                label: 'Settings',
+                action: toggleDrawer(true)
+              },
+              {
+                label: 'Export File',
+                action: DownloadFile
+              },
+              {
+                label: 'Export File with Solutions',
+                action: DownloadFileResults
+              },
+              {
+                label: 'Import File',
+                action: UploadFile
+              },
+              {
+                divider: true
+              },
+              {
+                label: 'Copy All',
+                action: CopyFileResults
+              },
+              {
+                divider: true
+              },
+              {
+                label: 'View Demo',
+                action: OpenDemoText
+              }
+            ]}
+          />
+        </Box>
+      </Header>
+      <Drawer open={drawerOpen} anchor="right" onClose={toggleDrawer(false)} size="sm">
+        <Box
+          role="presentation"
+          sx={{
+            padding: 2
+          }}
+        >
+          <Typography component="h2" level="h4" textColor="inherit" fontWeight="lg" mb={1}>
+            Settings
+          </Typography>
+          <FormControl sx={{ width: 240 }}>
+            <FormLabel>Colorscheme</FormLabel>
+            <Select value={theme} onChange={handleColorschemeChange}>
+              {themeOptions.map((theme) => (
+                <Option key={theme as string} value={theme as string}>
+                  {theme}
+                </Option>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+      </Drawer>
+    </Box>
   );
 }

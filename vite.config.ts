@@ -5,7 +5,7 @@ import { visualizer } from 'rollup-plugin-visualizer';
 import { VitePWA } from 'vite-plugin-pwa';
 
 const pwaOptions = {
-  mode: 'development',
+  mode: 'production',
   base: '/tally',
   manifest: {
     name: 'Tally - Notepad Calculator',
