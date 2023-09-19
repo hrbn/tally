@@ -13,13 +13,18 @@ import IconButton from '@mui/joy/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
+import ListDivider from '@mui/joy/ListDivider';
+import Dropdown from '@mui/joy/Dropdown';
+import Menu from '@mui/joy/Menu';
+import MenuButton from '@mui/joy/MenuButton';
+import MenuItem from '@mui/joy/MenuItem';
+import MoreVert from '@mui/icons-material/MoreVert';
 
 import { useTheme } from '../hooks/theme';
 
 import * as alls from '@uiw/codemirror-themes-all';
 
 import toast from 'react-hot-toast';
-import Menu from './Menu';
 import { useCalc } from '../context';
 import useFormatter from '../hooks/format';
 import demoContent from '../data/demo';
@@ -148,7 +153,6 @@ export default function MenuToolbar(props: BoxProps) {
   };
 
   const handleColorschemeChange = (event: React.SyntheticEvent | null, newValue: string | null) => {
-    // setColorscheme(newValue);
     setTheme(newValue as ReactCodeMirrorProps['theme']);
   };
 
@@ -185,49 +189,21 @@ export default function MenuToolbar(props: BoxProps) {
             TALLY
           </Typography>
         </Box>
-
-        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1.5 }}>
-          <Menu
-            id="action-menu"
-            control={
-              <IconButton size="sm" variant="plain" color="neutral" aria-label="Actions" title="Actions">
-                <MoreVertIcon />
-              </IconButton>
-            }
-            menus={[
-              {
-                label: 'Settings',
-                action: toggleDrawer(true)
-              },
-              {
-                label: 'Export File',
-                action: DownloadFile
-              },
-              {
-                label: 'Export File with Solutions',
-                action: DownloadFileResults
-              },
-              {
-                label: 'Import File',
-                action: UploadFile
-              },
-              {
-                divider: true
-              },
-              {
-                label: 'Copy All',
-                action: CopyFileResults
-              },
-              {
-                divider: true
-              },
-              {
-                label: 'View Demo',
-                action: OpenDemoText
-              }
-            ]}
-          />
-        </Box>
+        <Dropdown>
+          <MenuButton slots={{ root: IconButton }} slotProps={{ root: { variant: 'plain', color: 'neutral' } }}>
+            <MoreVert />
+          </MenuButton>
+          <Menu sx={{ zIndex: 9999 }}>
+            <MenuItem onClick={toggleDrawer(true)}>Settings</MenuItem>
+            <MenuItem onClick={DownloadFile}>Export File</MenuItem>
+            <MenuItem onClick={DownloadFileResults}>Export File with Solutions</MenuItem>
+            <MenuItem onClick={UploadFile}>Import File</MenuItem>
+            <ListDivider />
+            <MenuItem onClick={CopyFileResults}>Copy All</MenuItem>
+            <ListDivider />
+            <MenuItem onClick={OpenDemoText}>View Demo</MenuItem>
+          </Menu>
+        </Dropdown>
       </Header>
       <Drawer open={drawerOpen} anchor="right" onClose={toggleDrawer(false)} size="sm">
         <Box
