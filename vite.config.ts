@@ -6,13 +6,13 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 const pwaOptions = {
   mode: 'production',
-  base: '/tally',
+  base: '/tally/',
   manifest: {
     name: 'Tally - Notepad Calculator',
     short_name: 'Tally',
-    start_url: '/tally',
-    scope: '/tally',
-    id: '/tally',
+    start_url: '/tally/',
+    scope: '/tally/',
+    id: '/tally/',
     theme_color: '#25252D',
     background_color: '#25252D',
     display: 'standalone',
@@ -47,7 +47,7 @@ const pwaOptions = {
 };
 
 export default defineConfig({
-  base: '/tally',
+  base: '/tally/',
   plugins: [
     react(),
     visualizer({
@@ -57,7 +57,7 @@ export default defineConfig({
     VitePWA(pwaOptions)
   ],
   server: {
-    open: '/index.html'
+    open: 'index.html'
   },
   publicDir: 'public'
 });

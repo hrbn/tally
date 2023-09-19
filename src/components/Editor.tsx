@@ -26,6 +26,7 @@ const Editor: FC<EditorProps> = (props) => {
   const { doc, lines, setDoc, setLines, settings } = useCalc();
   const { evaluate } = useEvaluator();
   const { theme, setTheme } = useTheme();
+  const [init, setInit] = useState(false);
 
   const lineResults = useResultPlugin();
   const extensions = [StreamLanguage.define(mathjs), lineResults(), EditorView.lineWrapping];
@@ -33,7 +34,7 @@ const Editor: FC<EditorProps> = (props) => {
   useEffect(() => {
     evaluate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lines]);
+  }, [lines, init]);
 
   const onChange = (value: string, viewUpdate: ViewUpdate) => {
     setDoc(value);
@@ -51,6 +52,9 @@ const Editor: FC<EditorProps> = (props) => {
 
   const onCreateEditor = () => {
     setLines(doc.split('\n'));
+    setTimeout(() => {
+      setInit(!init);
+    }, 500);
   };
 
   const editor = useRef();
