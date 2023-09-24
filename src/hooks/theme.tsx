@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
 import { ReactCodeMirrorProps } from '@uiw/react-codemirror';
+import { useEffect } from 'react';
 import { useLocalStorage } from 'usehooks-ts';
 
-export function useTheme(name: ReactCodeMirrorProps['theme'] = 'atomone') {
+export function useTheme() {
   const [theme, setTheme] = useLocalStorage('theme', 'atomone');
 
   useEffect(() => {

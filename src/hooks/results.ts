@@ -1,12 +1,11 @@
-import { EditorView, WidgetType, Decoration, ViewPlugin } from '@codemirror/view';
+import { Decoration, EditorView, ViewPlugin, WidgetType } from '@codemirror/view';
 import { RangeSetBuilder } from '@codemirror/state';
 import { useCalc } from '../context';
 import useFormatter from '../hooks/format';
 import toast from 'react-hot-toast';
 
-const useResultPlugin = (): () => import("@codemirror/state").Extension[] => {
+const useResultPlugin = (): () => import('@codemirror/state').Extension[] => {
   const { results } = useCalc();
-  console.log("results count: " + results.size);
   const { format } = useFormatter();
 
   const baseTheme = EditorView.baseTheme({
@@ -15,11 +14,11 @@ const useResultPlugin = (): () => import("@codemirror/state").Extension[] => {
   });
 
   const copyTextToClipboard = async (text: string): Promise<void> => {
-    if ('clipboard' in navigator) {
+    if ('clipboard' in navigator)
       return await navigator.clipboard.writeText(text);
-    } else {
-      return document.execCommand('copy', true, text);
-    }
+
+    return document.execCommand('copy', true, text);
+
   };
 
   const copyOnClick = (e: MouseEvent): void => {
@@ -55,7 +54,7 @@ const useResultPlugin = (): () => import("@codemirror/state").Extension[] => {
 
   function resultDeco(view: EditorView): any {
     let builder = new RangeSetBuilder<Decoration>();
-    for (let { from, to } of view.visibleRanges) {
+    for (let { from, to } of view.visibleRanges)
       for (let pos = from; pos <= to;) {
         let line = view.state.doc.lineAt(pos);
         let deco = Decoration.widget({
@@ -65,7 +64,7 @@ const useResultPlugin = (): () => import("@codemirror/state").Extension[] => {
         builder.add(line.to, line.to, deco);
         pos = line.to + 1;
       }
-    }
+
     return builder.finish();
   }
 

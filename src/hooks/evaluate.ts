@@ -21,7 +21,9 @@ const useEvaluator = (): { evaluate: () => void; } => {
 
       if (!trimmed.length) return updateResults(lineNumber, null);
 
-      if (trimmed.match(/\bline(\d+)\b/)) {
+      if (trimmed.charAt(0).match(/[+\-*/]/)) trimmed = `last ${ trimmed }`;
+
+      if (trimmed.match(/\bline(\d+)\b/))
         try {
           trimmed = trimmed.replace(/\bline(\d+)\b/g, (match, p1) => {
             return `(${ results.get(Number(p1) - 1) })`;
@@ -29,7 +31,7 @@ const useEvaluator = (): { evaluate: () => void; } => {
         } catch (e) {
           return updateResults(lineNumber, null);
         }
-      }
+
 
       const aggregated = aggregate(trimmed, lineNumber);
       const preprocessed = preprocess(aggregated);
@@ -39,19 +41,19 @@ const useEvaluator = (): { evaluate: () => void; } => {
       } catch (e) {
         compiled = null;
       }
-      if (compiled) {
+      if (compiled)
         try {
           const result = compiled.evaluate(scope);
           if (typeof result !== 'function' && typeof result !== 'undefined') {
-            scope['last'] = result;
+            scope.last = result;
             return updateResults(lineNumber, result);
-          } else {
-            return updateResults(lineNumber, null);
           }
+          return updateResults(lineNumber, null);
+
         } catch (error) {
           return updateResults(lineNumber, null);
         }
-      }
+
       return updateResults(lineNumber, null);
     });
   }
@@ -68,20 +70,20 @@ const useEvaluator = (): { evaluate: () => void; } => {
       let datapoints: string[] = [];
       for (let thisLine = lineNumber - 1; thisLine >= 0; thisLine--) {
         let result = results.get(thisLine);
-        if (result === undefined || result === null || aggregationPattern.test(lines[thisLine].trim())) {
-          if (datapoints.length > 0) {
+        if (result === undefined || result === null || aggregationPattern.test(lines[thisLine].trim()))
+          if (datapoints.length > 0)
             break;
-          } else {
+          else
             continue;
-          }
-        }
+
+
         datapoints.push(format(result, settingsClone));
       }
-      if (averagePattern.test(line)) {
+      if (averagePattern.test(line))
         aggregateStr = `${ datapoints.join('+') } / ${ datapoints.length }`;
-      } else {
+      else
         aggregateStr = `${ datapoints.join('+') }`;
-      }
+
       return line.replace(aggregationPattern, `(${ aggregateStr })`);
     }
     return line;

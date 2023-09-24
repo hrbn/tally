@@ -1,19 +1,14 @@
 {
+  "root": true,
   "extends": [
-    "eslint:recommended",
-    "plugin:import/errors",
-    "plugin:react/recommended",
-    "plugin:jsx-a11y/recommended",
-    "plugin:react-hooks/recommended",
+    "typescript",
+    "typescript/react",
     "prettier"
   ],
   "plugins": [
-    "react",
-    "import",
-    "jsx-a11y"
+    "unused-imports"
   ],
   "rules": {
-    "react/prop-types": 0,
     "react/react-in-jsx-scope": 0,
     "indent": [
       "warn",
@@ -86,14 +81,12 @@
     "no-octal-escape": "error",
     "no-proto": "error",
     "no-prototype-builtins": "off",
-    "no-return-await": "error",
     "no-script-url": "error",
     "no-self-compare": "error",
     "no-sequences": "error",
     "no-undef-init": "error",
     "no-unmodified-loop-condition": "error",
     "no-unneeded-ternary": "warn",
-    "no-unused-vars": "off",
     "no-use-before-define": [
       "error",
       "nofunc"
@@ -122,7 +115,7 @@
     ],
     "sort-vars": "warn",
     "sort-imports": "warn",
-    "spaced-comment": "always",
+    "spaced-comment": "warn",
     "strict": "off",
     "yoda": [
       "error",
@@ -134,6 +127,18 @@
     "jsx-quotes": [
       "warn",
       "prefer-double"
+    ],
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
     ]
   },
   "parserOptions": {

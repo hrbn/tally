@@ -71,7 +71,6 @@ const Editor: FC<EditorProps> = (props) => {
           allowMultipleSelections: false,
           indentOnInput: true
         }}
-        className="vh-100 vw-100 pb-4 font-monospace"
         extensions={[StreamLanguage.define(mathjs), lineResults(), EditorView.lineWrapping]}
         theme={alls[theme as keyof typeof alls] || theme}
         onChange={onChange}

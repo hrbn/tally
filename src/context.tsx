@@ -1,5 +1,4 @@
-import { createContext, useReducer, useContext, useEffect, ReactNode } from 'react';
-import { ReactCodeMirrorProps } from '@uiw/react-codemirror';
+import { ReactNode, createContext, useContext, useEffect, useReducer } from 'react';
 
 import CalcReducer, { initialState } from './reducer';
 import { Maths } from './components/Maths';
@@ -73,9 +72,7 @@ const CalcProvider: React.FC<CalcProviderProps> = ({ children }) => {
 const useCalc = (): CalcState => {
   const context = useContext(CalcContext);
 
-  if (context === undefined) {
-    throw new Error('useCalc must be used within CalcContext');
-  }
+  if (context === undefined) throw new Error('useCalc must be used within CalcContext');
 
   return context;
 };

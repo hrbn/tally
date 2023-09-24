@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { CalcProvider } from './context';
-import Editor from './components/Editor';
-import AppMenuBar from './components/AppMenuBar';
-import { CssVarsProvider, extendTheme } from '@mui/joy/styles';
-import { useTheme } from './hooks/theme';
 import * as alls from '@uiw/codemirror-themes-all';
-import { Toaster } from 'react-hot-toast';
+import { CssVarsProvider, extendTheme } from '@mui/joy/styles';
+import React, { useEffect } from 'react';
+import AppMenuBar from './components/AppMenuBar';
+import Box from '@mui/joy/Box';
+import { CalcProvider } from './context';
 import CssBaseline from '@mui/joy/CssBaseline';
-import Box, { BoxProps } from '@mui/joy/Box';
+import Editor from './components/Editor';
+import { Toaster } from 'react-hot-toast';
+import { useTheme } from './hooks/theme';
 
 const getThemeObjects = () => {
   let themeObjects = {};
-  const defaults = ['dark', 'light']
+  ['dark', 'light']
     .concat(Object.keys(alls))
     .filter((item) => typeof alls[item as keyof typeof alls] !== 'function')
     .filter((item) => /^(defaultSettings)/.test(item as keyof typeof alls))
@@ -22,7 +22,7 @@ const getThemeObjects = () => {
       themeObjects[key] = {
         palette: {
           background: {
-            default: alls[item]['background']
+            default: alls[item].background
           }
         }
       };
@@ -42,7 +42,7 @@ const getBackground = (aTheme: string) => {
     .filter((item) => /^(defaultSettings)/.test(item as keyof typeof alls))
     .filter((item) => themeRegex.test(item as keyof typeof alls))
     .map((item) => {
-      return alls[item]['background'];
+      return alls[item].background;
     })[0];
   return defaults;
 };

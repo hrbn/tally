@@ -1,5 +1,5 @@
+import { currencySymbols, currencyUnits } from '../data/currency';
 import { useCalc } from '../context';
-import { currencyUnits, currencySymbols } from '../data/currency';
 
 interface FormatterSettings {
   lowerExp: number;
@@ -18,9 +18,9 @@ const useFormatter = (): {
 
   function format(value: any, formatterSettings: FormatterSettings = defaultFormatterSettings()): any {
     if (value instanceof Date) {
-      if (value.getHours() || value.getMinutes() || value.getSeconds() || value.getMilliseconds()) {
+      if (value.getHours() || value.getMinutes() || value.getSeconds() || value.getMilliseconds())
         return value.toLocaleString();
-      }
+
       return value.toLocaleDateString();
     }
 
@@ -40,17 +40,17 @@ const useFormatter = (): {
 
       let output = math.format(number, options);
 
-      if (formatterSettings.trimTrailingZeros) {
-        if (/^-?\d+\.\d+$/.test(output)) {
+      if (formatterSettings.trimTrailingZeros)
+        if (/^-?\d+\.\d+$/.test(output))
           output = output.replace(/0+$/, '').replace(/\.$/, '');
-        }
-      }
 
-      if (formatterSettings.displayCommas) {
-        if (/^-?\d+(\.\d+)?$/.test(output)) {
+
+
+      if (formatterSettings.displayCommas)
+        if (/^-?\d+(\.\d+)?$/.test(output))
           output = output.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
-        }
-      }
+
+
 
       return output;
     });
@@ -58,9 +58,9 @@ const useFormatter = (): {
     Object.entries(currencySymbols).forEach(([code, symbol]) => {
       symbol += symbol === '$' ? '$' : '';
       const replaceRegex = new RegExp(`\\b([\\d\\.\\,]+) ${ code }`, 'g');
-      if (replaceRegex.test(stringOutput)) {
+      if (replaceRegex.test(stringOutput))
         stringOutput = stringOutput.replace(replaceRegex, `${ symbol }$1`);
-      }
+
     });
 
     return stringOutput;
