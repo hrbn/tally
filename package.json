@@ -1,17 +1,4 @@
 {
-  "name": "tally",
-  "private": true,
-  "version": "1.2.0",
-  "type": "module",
-  "scripts": {
-    "start": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "predeploy": "yarn build",
-    "deploy": "gh-pages -d dist",
-    "mkicons": "pwa-asset-generator ./src/images/logo.svg ./public/images --background \"linear-gradient(to top, #9ccc65 0%, #d4e157 100%)\" --index index.html --log --favicon --mstile --icon-only",
-    "mksplash": "pwa-asset-generator ./src/images/logo_splash.svg ./public/images --background \"#131318\" --index index.html --log --splash --splash-only --padding \"calc(50vh - 5%) calc(50vw - 10%)\" --scrape false"
-  },
   "dependencies": {
     "@codemirror/state": "^6.2.1",
     "@emotion/react": "^11.11.0",
@@ -72,6 +59,19 @@
     "vite-plugin-pwa": "^0.14.0"
   },
   "engines": {
-    "node": "20.6.1"
-  }
+    "node": "^20"
+  },
+  "name": "tally",
+  "private": true,
+  "scripts": {
+    "build": "vite build",
+    "deploy": "gh-pages -d dist",
+    "mkicons": "pwa-asset-generator ./src/images/logo.svg ./public/images --background \"linear-gradient(to top, #9ccc65 0%, #d4e157 100%)\" --index index.html --log --favicon --mstile --icon-only",
+    "mksplash": "pwa-asset-generator ./src/images/logo_splash.svg ./public/images --background \"#131318\" --index index.html --log --splash --splash-only --padding \"calc(50vh - 5%) calc(50vw - 10%)\" --scrape false",
+    "predeploy": "yarn build",
+    "preview": "vite preview",
+    "start": "vite"
+  },
+  "type": "module",
+  "version": "1.2.0"
 }
