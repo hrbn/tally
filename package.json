@@ -17,6 +17,7 @@
     "eslint-plugin-autofix": "^1.1.0",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
     "eslint-plugin-unused-imports": "^3.0.0",
     "mathjs": "^11.5.0",
     "pwa-asset-generator": "^6.3.1",

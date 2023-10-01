@@ -1,7 +1,7 @@
 import { defaultScope } from '../components/Maths';
+import { useCalc } from '../context';
 import useFormatter from './format';
 import usePreprocessor from './preprocess';
-import { useCalc } from '../context';
 
 const useEvaluator = (): { evaluate: () => void; } => {
   const { format, defaultFormatterSettings } = useFormatter();
@@ -15,19 +15,17 @@ const useEvaluator = (): { evaluate: () => void; } => {
 
   function evaluate() {
     setResults(new Map(results?.clear()));
-    let scope = defaultScope();
+    const scope = defaultScope();
     lines.map((line, lineNumber) => {
       let trimmed = line.trim();
 
       if (!trimmed.length) return updateResults(lineNumber, null);
 
-      if (trimmed.charAt(0).match(/[+\-*/]/)) trimmed = `last ${ trimmed }`;
+      if (trimmed.charAt(0).match(/[+\-*/]/) && lines[lineNumber - 1] !== '') trimmed = `last ${ trimmed }`;
 
       if (trimmed.match(/\bline(\d+)\b/))
         try {
-          trimmed = trimmed.replace(/\bline(\d+)\b/g, (match, p1) => {
-            return `(${ results.get(Number(p1) - 1) })`;
-          });
+          trimmed = trimmed.replace(/\bline(\d+)\b/g, (match, p1) => `(${ results.get(Number(p1) - 1) })`);
         } catch (e) {
           return updateResults(lineNumber, null);
         }
@@ -67,9 +65,9 @@ const useEvaluator = (): { evaluate: () => void; } => {
       const settingsClone = { ...formatterSettings };
       settingsClone.displayCommas = false;
       let aggregateStr = '';
-      let datapoints: string[] = [];
+      const datapoints: string[] = [];
       for (let thisLine = lineNumber - 1; thisLine >= 0; thisLine--) {
-        let result = results.get(thisLine);
+        const result = results.get(thisLine);
         if (result === undefined || result === null || aggregationPattern.test(lines[thisLine].trim()))
           if (datapoints.length > 0)
             break;

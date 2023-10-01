@@ -18,7 +18,8 @@
   },
   "plugins": [
     "unused-imports",
-    "autofix"
+    "autofix",
+    "simple-import-sort"
   ],
   "root": true,
   "rules": {
@@ -77,7 +78,6 @@
     "autofix/prefer-object-spread": "warn",
     "autofix/prefer-spread": "warn",
     "autofix/prefer-template": "warn",
-    "autofix/sort-imports": "warn",
     "autofix/sort-vars": "warn",
     "autofix/yoda": [
       "error",
@@ -169,6 +169,8 @@
         "omitLastInOneLineBlock": true
       }
     ],
+    "simple-import-sort/imports": "warn",
+    "sort-imports": "warn",
     "spaced-comment": "warn",
     "strict": "off",
     "unused-imports/no-unused-imports": "error",
