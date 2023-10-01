@@ -27,6 +27,7 @@
     "@uiw/react-codemirror": "^4.19.7",
     "axios": "^1.2.6",
     "cssnano": "^5.1.14",
+    "eslint-plugin-autofix": "^1.1.0",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-unused-imports": "^3.0.0",

@@ -58,6 +58,9 @@ ladle = 6 tablespoons
 gravyBoat = 5 ladle
 3 gravyBoat in cups
 
+hexToChar("D83DDE43")
+charToHex("👾")
+
 anArray = [[2, 0], [-1, 3]]
 aMatrix = matrix([[7, 1], [-2, 3]])
 multiply(anArray, aMatrix)

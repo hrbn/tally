@@ -1,50 +1,97 @@
 {
-  "root": true,
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
   "extends": [
     "typescript",
     "typescript/react",
     "prettier"
   ],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 2022,
+    "sourceType": "module"
+  },
   "plugins": [
-    "unused-imports"
+    "unused-imports",
+    "autofix"
   ],
+  "root": true,
   "rules": {
-    "react/react-in-jsx-scope": 0,
-    "indent": [
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      {
+        "prefer": "type-imports"
+      }
+    ],
+    "@typescript-eslint/no-unused-vars": "off",
+    "array-callback-return": "error",
+    "autofix/arrow-body-style": [
+      "error",
+      "as-needed"
+    ],
+    "autofix/comma-dangle": [
+      "error",
+      "always-multiline"
+    ],
+    "autofix/curly": [
+      "warn",
+      "multi"
+    ],
+    "autofix/dot-notation": "warn",
+    "autofix/eqeqeq": [
+      "warn",
+      "smart"
+    ],
+    "autofix/indent": [
       "warn",
       2,
       {
         "SwitchCase": 1
       }
     ],
-    "linebreak-style": 1,
-    "prefer-destructuring": 1,
-    "prefer-regex-literals": 1,
-    "prefer-object-has-own": 1,
-    "quotes": [
+    "autofix/jsx-quotes": [
       "warn",
-      "single",
+      "prefer-double"
+    ],
+    "autofix/linebreak-style": 1,
+    "autofix/newline-per-chained-call": [
+      "error",
       {
-        "avoidEscape": true,
-        "allowTemplateLiterals": true
+        "ignoreChainWithDepth": 2
       }
     ],
-    "array-callback-return": "error",
+    "autofix/no-useless-catch": "warn",
+    "autofix/no-useless-computed-key": "error",
+    "autofix/no-useless-rename": "error",
+    "autofix/no-useless-return": "error",
+    "autofix/object-shorthand": "error",
+    "autofix/prefer-arrow-callback": "warn",
+    "autofix/prefer-const": "warn",
+    "autofix/prefer-destructuring": 1,
+    "autofix/prefer-numeric-literals": "warn",
+    "autofix/prefer-object-spread": "warn",
+    "autofix/prefer-spread": "warn",
+    "autofix/prefer-template": "warn",
+    "autofix/sort-imports": "warn",
+    "autofix/sort-vars": "warn",
+    "autofix/yoda": [
+      "error",
+      "never",
+      {
+        "onlyEquality": true
+      }
+    ],
     "brace-style": [
       "warn",
       "1tbs",
       {
         "allowSingleLine": true
       }
-    ],
-    "curly": [
-      "warn",
-      "multi"
-    ],
-    "dot-notation": "warn",
-    "eqeqeq": [
-      "warn",
-      "smart"
     ],
     "no-alert": "off",
     "no-caller": "error",
@@ -87,25 +134,34 @@
     "no-undef-init": "error",
     "no-unmodified-loop-condition": "error",
     "no-unneeded-ternary": "warn",
+    "no-unused-vars": "off",
     "no-use-before-define": [
       "error",
       "nofunc"
     ],
     "no-useless-call": "error",
-    "no-useless-computed-key": "error",
     "no-useless-constructor": "error",
-    "no-useless-rename": "error",
-    "no-useless-return": "error",
     "no-var": "off",
     "no-with": "error",
-    "object-shorthand": "error",
-    "prefer-arrow-callback": "warn",
-    "prefer-const": "off",
-    "prefer-numeric-literals": "warn",
-    "prefer-object-spread": "warn",
+    "prefer-object-has-own": 1,
+    "prefer-regex-literals": 1,
     "prefer-rest-params": "warn",
-    "prefer-spread": "warn",
-    "prefer-template": "warn",
+    "quotes": [
+      "warn",
+      "single",
+      {
+        "allowTemplateLiterals": true,
+        "avoidEscape": true
+      }
+    ],
+    "react/react-in-jsx-scope": 0,
+    "react/self-closing-comp": [
+      "warn",
+      {
+        "component": true,
+        "html": true
+      }
+    ],
     "semi": [
       "warn",
       "always",
@@ -113,50 +169,20 @@
         "omitLastInOneLineBlock": true
       }
     ],
-    "sort-vars": "warn",
-    "sort-imports": "warn",
     "spaced-comment": "warn",
     "strict": "off",
-    "yoda": [
-      "error",
-      "never",
-      {
-        "onlyEquality": true
-      }
-    ],
-    "jsx-quotes": [
-      "warn",
-      "prefer-double"
-    ],
-    "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": "off",
     "unused-imports/no-unused-imports": "error",
     "unused-imports/no-unused-vars": [
       "warn",
       {
-        "vars": "all",
-        "varsIgnorePattern": "^_",
         "args": "after-used",
-        "argsIgnorePattern": "^_"
+        "argsIgnorePattern": "^_",
+        "vars": "all",
+        "varsIgnorePattern": "^_"
       }
     ]
   },
-  "parserOptions": {
-    "ecmaVersion": 2022,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "jsx": true
-    }
-  },
-  "env": {
-    "es6": true,
-    "browser": true,
-    "node": true
-  },
   "settings": {
-    "react": {
-      "version": "detect"
-    },
     "import/resolver": {
       "node": {
         "extensions": [
@@ -164,6 +190,9 @@
           ".jsx"
         ]
       }
+    },
+    "react": {
+      "version": "detect"
     }
   }
 }
