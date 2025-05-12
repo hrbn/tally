@@ -5,7 +5,7 @@ A notepad calculator Progressive Web App (PWA) with instant calculations as you 
 ## Features
 
 - Evaluates mathematical expressions using the Math.js expression parser
-- Unit conversions ans calculations
+- Unit conversions and calculations
 - Currency conversions, including crypto, using up-to-date exchange rates
 - Define variables and use them throughout your document
 - Make notes and comments alongside your calculations
