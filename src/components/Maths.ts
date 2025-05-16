@@ -1,10 +1,27 @@
 import * as mathjs from 'mathjs';
-import { currencyUnits, fetchExchangeRates } from '../data/currency';
+
+import { currencyUnits, defaultExchangeRates, fetchExchangeRates } from '../data/currency';
+
+interface ExchangeRateResponse {
+  base: string;
+  rates: Record<string, number>;
+}
 
 export const Maths = async (): Promise<mathjs.MathJsStatic> => {
-  const exchangeRates = await fetchExchangeRates();
+  // Fetch exchange rates with a timeout to ensure we don't block initialization too long
+  let exchangeRates: ExchangeRateResponse;
+  try {
+    const fetchPromise = fetchExchangeRates();
+    const timeoutPromise = new Promise<ExchangeRateResponse>((_, reject) => 
+      setTimeout(() => reject(new Error('Exchange rate API request timed out')), 5000),
+    );
+    exchangeRates = await Promise.race([fetchPromise, timeoutPromise]);
+  } catch (error) {
+    console.error('Failed to fetch exchange rates with timeout:', error);
+    exchangeRates = defaultExchangeRates;
+  }
 
-  const config = {
+  const config: mathjs.ConfigOptions = {
     epsilon: 1e-60,
     number: 'BigNumber',
     precision: 64,
@@ -12,23 +29,27 @@ export const Maths = async (): Promise<mathjs.MathJsStatic> => {
 
   const math = mathjs.create(mathjs.all, config);
 
-  const addDate = math.factory('add', ['typed'], ({ typed }) => typed('add', {
-    'Date, Unit' (a: Date, b: mathjs.Unit) {
-      return new Date(a.getTime() + b.toNumber('ms'));
-    },
-    'Unit, Date' (a: mathjs.Unit, b: Date) {
-      return new Date(a.toNumber('ms') + b.getTime());
-    },
-  }));
+  const addDate = math.factory('add', ['typed'], ({ typed }) =>
+    typed('add', {
+      'Date, Unit'(a: Date, b: mathjs.Unit) {
+        return new Date(a.getTime() + b.toNumber('ms'));
+      },
+      'Unit, Date'(a: mathjs.Unit, b: Date) {
+        return new Date(a.toNumber('ms') + b.getTime());
+      },
+    }),
+  );
 
-  const subtractDate = math.factory('subtract', ['typed'], ({ typed }) => typed('subtract', {
-    'Date, Unit' (a: Date, b: mathjs.Unit) {
-      return new Date(a.getTime() - b.toNumber('ms'));
-    },
-    'Date, Date' (a: Date, b: Date) {
-      return math.unit(a.getTime() - b.getTime(), 'ms').to('s');
-    },
-  }));
+  const subtractDate = math.factory('subtract', ['typed'], ({ typed }) =>
+    typed('subtract', {
+      'Date, Unit'(a: Date, b: mathjs.Unit) {
+        return new Date(a.getTime() - b.toNumber('ms'));
+      },
+      'Date, Date'(a: Date, b: Date) {
+        return math.unit(a.getTime() - b.getTime(), 'ms').to('s');
+      },
+    }),
+  );
 
   math.import([addDate, subtractDate], {});
   math.import(
@@ -70,37 +91,56 @@ export const Maths = async (): Promise<mathjs.MathJsStatic> => {
     {},
   );
 
+  // Create base currency unit
   math.createUnit(exchangeRates.base, { aliases: [exchangeRates.base.toLowerCase()] });
+  
+  // List of currency units that shouldn't be aliased to avoid conflicts with other units
   const doNotAlias = ['cup', 'T'];
   let loaded = 1;
-  Object.keys(exchangeRates.rates)
-    .filter((currency) => currency !== exchangeRates.base && currencyUnits.includes(currency))
-    .forEach((currency) => {
-      math.createUnit(currency, {
-        definition: math.unit(`${ 1 / exchangeRates.rates[currency] }${ exchangeRates.base }`),
-        aliases: [doNotAlias.includes(currency.toLowerCase()) ? '' : currency.toLowerCase()],
+  
+  // Only try to load other currencies if they exist in the response
+  if (exchangeRates.rates && Object.keys(exchangeRates.rates).length > 0) {
+    Object.keys(exchangeRates.rates)
+      .filter((currency) => currency !== exchangeRates.base && currencyUnits.includes(currency))
+      .forEach((currency) => {
+        try {
+          const rate = exchangeRates.rates[currency];
+          if (rate) {
+            math.createUnit(currency, {
+              definition: math.unit(`${1 / rate}${exchangeRates.base}`),
+              aliases: [doNotAlias.includes(currency.toLowerCase()) ? '' : currency.toLowerCase()],
+            });
+            loaded += 1;
+          }
+        } catch (error) {
+          console.warn(`Failed to create currency unit for ${currency}:`, error);
+        }
       });
-      loaded += 1;
-    });
+  }
 
   console.log('Loaded definitions for %d currencies.', loaded);
 
-  math.createUnit('penny', {
-    aliases: ['pennies', '¢', 'cent', 'cents'],
-    definition: math.evaluate('0.01 USD'),
-  });
-  math.createUnit('nickel', {
-    aliases: ['nickels'],
-    definition: math.evaluate('0.05 USD'),
-  });
-  math.createUnit('dime', {
-    aliases: ['dimes'],
-    definition: math.evaluate('0.1 USD'),
-  });
-  math.createUnit('quarter', {
-    aliases: ['quarters'],
-    definition: math.evaluate('0.25 USD'),
-  });
+  // Create US coin units
+  try {
+    math.createUnit('penny', {
+      aliases: ['pennies', '¢', 'cent', 'cents'],
+      definition: math.evaluate('0.01 USD'),
+    });
+    math.createUnit('nickel', {
+      aliases: ['nickels'],
+      definition: math.evaluate('0.05 USD'),
+    });
+    math.createUnit('dime', {
+      aliases: ['dimes'],
+      definition: math.evaluate('0.1 USD'),
+    });
+    math.createUnit('quarter', {
+      aliases: ['quarters'],
+      definition: math.evaluate('0.25 USD'),
+    });
+  } catch (error) {
+    console.warn('Failed to create US coin units:', error);
+  }
 
   return math;
 };
@@ -141,11 +181,13 @@ function isNumber(value: string | null): boolean {
 
 function hexToChar(input: string): string {
   const hexes = input.match(/.{1,4}/g) || [];
-  return hexes.map(hex => String.fromCharCode(parseInt(hex, 16))).join('');
+  return hexes.map((hex) => String.fromCharCode(parseInt(hex, 16))).join('');
 }
 
 function charToHex(input: string): string {
-  return [...input].map(char => char.charCodeAt(0).toString(16)
-    .padStart(4, '0')).join('')
+  return [...input]
+    .map((char) => char.charCodeAt(0).toString(16)
+      .padStart(4, '0'))
+    .join('')
     .toUpperCase();
 }

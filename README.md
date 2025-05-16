@@ -18,7 +18,12 @@ To run locally, follow these steps:
 1. Clone this repository to your local machine.
 2. Set up node environment with `nvm install 20.3.0 && nvm use 20.3.0`. Other versions of node may work but are untested.
 3. Install the dependencies by running `yarn install` or `npm install` in the project directory.
-4. Start the development server by running `yarn start` or `npm run start`.
+4. Create a `.env` file in the root directory and add your CurrencyFreaks API key:
+   ```
+   VITE_CURRENCY_API_KEY=your_api_key_here
+   ```
+   You can copy the `.env.example` file and replace `your_api_key_here` with your actual API key.
+5. Start the development server by running `yarn start` or `npm run start`.
 5. Open your browser and navigate to `http://localhost:3000` to access the app.
 
 ## Technology Stack

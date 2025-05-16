@@ -1,13 +1,41 @@
 import axios from 'axios';
 
-export const fetchExchangeRates = async (): Promise<any> => {
-  const response = await axios.get('https://api.currencyfreaks.com/v2.0/rates/latest?apikey=05248d62f5b349a4bd1150e4c9db82db');
-  return (
-    response?.data ?? {
-      base: 'USD',
-      rates: { USD: 1.0 },
+interface ExchangeRateResponse {
+  base: string;
+  rates: Record<string, number>;
+}
+
+// Default fallback response when the API call fails
+export const defaultExchangeRates: ExchangeRateResponse = {
+  base: 'USD',
+  rates: { USD: 1.0 },
+};
+
+/**
+ * Fetches exchange rates from the CurrencyFreaks API.
+ * Gracefully handles API failures by returning default exchange rates.
+ * @returns ExchangeRateResponse with base currency and exchange rates, or default values if API call fails
+ */
+export const fetchExchangeRates = async (): Promise<ExchangeRateResponse> => {
+  try {
+    const apiKey = import.meta.env.VITE_CURRENCY_API_KEY;
+    if (!apiKey) {
+      console.warn('No API key found for currency exchange rates. Using default USD rate only.');
+      return defaultExchangeRates;
     }
-  );
+    
+    const response = await axios.get(`https://api.currencyfreaks.com/v2.0/rates/latest?apikey=${apiKey}`);
+    
+    if (!response?.data?.rates || Object.keys(response.data.rates).length === 0) {
+      console.warn('Invalid response from currency exchange rate API. Using default USD rate only.');
+      return defaultExchangeRates;
+    }
+    
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch exchange rates:', error);
+    return defaultExchangeRates;
+  }
 };
 
 export const currencyUnits: string[] =
