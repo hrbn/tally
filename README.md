@@ -1,22 +1,22 @@
 # Tally
 
-A notepad calculator PWA with instant calculations as you type.
+A notepad calculator Progressive Web App (PWA) with instant calculations as you type.
 
 ## Features
 
-- Offers an exstensive  basic arithmeticEvaluates mathematical expressions using the Math.js expression parser, providing an extensive set 
-- Unit conversions: Convert between units of measurement and perform calulations on items with different units
-- Currency conversions: Convert between currencies, including crypto, using up-to-date exchange rates
-- Variables: Define variables and use them throughout your document
-- Notepad: Make notes and comments alongside your calculations
+- Evaluates mathematical expressions using the Math.js expression parser
+- Unit conversions and calculations
+- Currency conversions, including crypto, using up-to-date exchange rates
+- Define variables and use them throughout your document
+- Make notes and comments alongside your calculations
 - Code editor with auto-suggestions and syntax highlighting
 
 ## Installation
 
 To run locally, follow these steps:
 
-1. Clone this repository to your local machine.
-2. Set up node environment with `nvm install 20.3.0 && nvm use 20.3.0`. Other versions of node may work but are untested.
+1. Clone this repository.
+2. Set up node environment, e.g. with `nvm install 20.3.0 && nvm use 20.3.0`. Other versions of node may work but are untested.
 3. Install the dependencies by running `yarn install` or `npm install` in the project directory.
 4. Create a `.env` file in the root directory and add your CurrencyFreaks API key:
    ```
