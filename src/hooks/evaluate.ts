@@ -1,59 +1,57 @@
+import type { MathJsStatic } from 'mathjs';
+
 import { defaultScope } from '../components/Maths';
 import { useCalc } from '../context';
-import useFormatter from './format';
-import usePreprocessor from './preprocess';
+import { defaultFormatterSettings, format } from './format';
+import { preprocess } from './preprocess';
 
-const useEvaluator = (): { evaluate: () => void; } => {
-  const { format, defaultFormatterSettings } = useFormatter();
-  const { preprocess } = usePreprocessor();
+export function evaluateLines(math: MathJsStatic, lines: string[], scope: Record<string, any> = defaultScope()): Map<number, any> {
+  const results = new Map<number, any>();
   const formatterSettings = defaultFormatterSettings();
-  const { math, lines, results, setResults } = useCalc();
 
-  const updateResults = (k: number, v: any) => {
-    setResults(new Map(results.set(k, v)));
-  };
+  lines.forEach((line, lineNumber) => {
+    results.set(lineNumber, evaluateLine(line, lineNumber));
+  });
 
-  function evaluate() {
-    setResults(new Map(results?.clear()));
-    const scope = defaultScope();
-    lines.map((line, lineNumber) => {
-      let trimmed = line.trim();
+  return results;
 
-      if (!trimmed.length) return updateResults(lineNumber, null);
+  function evaluateLine(line: string, lineNumber: number): any {
+    let trimmed = line.trim();
 
-      if (trimmed.charAt(0).match(/[+\-*/]/) && lines[lineNumber - 1] !== '') trimmed = `last ${ trimmed }`;
+    if (!trimmed.length) return null;
 
-      if (trimmed.match(/\bline(\d+)\b/))
-        try {
-          trimmed = trimmed.replace(/\bline(\d+)\b/g, (match, p1) => `(${ results.get(Number(p1) - 1) })`);
-        } catch (e) {
-          return updateResults(lineNumber, null);
-        }
+    if (trimmed.charAt(0).match(/[+\-*/]/) && lines[lineNumber - 1] !== '') trimmed = `last ${ trimmed }`;
 
-
-      const aggregated = aggregate(trimmed, lineNumber);
-      const preprocessed = preprocess(aggregated);
-      let compiled;
+    if (trimmed.match(/\bline(\d+)\b/))
       try {
-        compiled = math.compile(preprocessed);
+        trimmed = trimmed.replace(/\bline(\d+)\b/g, (match, p1) => `(${ results.get(Number(p1) - 1) })`);
       } catch (e) {
-        compiled = null;
+        return null;
       }
-      if (compiled)
-        try {
-          const result = compiled.evaluate(scope);
-          if (typeof result !== 'function' && typeof result !== 'undefined') {
-            scope.last = result;
-            return updateResults(lineNumber, result);
-          }
-          return updateResults(lineNumber, null);
 
-        } catch (error) {
-          return updateResults(lineNumber, null);
+
+    const aggregated = aggregate(trimmed, lineNumber);
+    const preprocessed = preprocess(aggregated);
+    let compiled;
+    try {
+      compiled = math.compile(preprocessed);
+    } catch (e) {
+      compiled = null;
+    }
+    if (compiled)
+      try {
+        const result = compiled.evaluate(scope);
+        if (typeof result !== 'function' && typeof result !== 'undefined') {
+          scope.last = result;
+          return result;
         }
+        return null;
 
-      return updateResults(lineNumber, null);
-    });
+      } catch (error) {
+        return null;
+      }
+
+    return null;
   }
 
   function aggregate(line: string, lineNumber: number): string {
@@ -75,7 +73,7 @@ const useEvaluator = (): { evaluate: () => void; } => {
             continue;
 
 
-        datapoints.push(format(result, settingsClone));
+        datapoints.push(format(math, result, settingsClone));
       }
       if (averagePattern.test(line))
         aggregateStr = `${ datapoints.join('+') } / ${ datapoints.length }`;
@@ -85,6 +83,14 @@ const useEvaluator = (): { evaluate: () => void; } => {
       return line.replace(aggregationPattern, `(${ aggregateStr })`);
     }
     return line;
+  }
+}
+
+const useEvaluator = (): { evaluate: () => void; } => {
+  const { math, lines, setResults } = useCalc();
+
+  function evaluate() {
+    setResults(evaluateLines(math as unknown as MathJsStatic, lines));
   }
 
   return { evaluate };
