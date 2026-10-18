@@ -77,11 +77,8 @@ export function preprocess(text: string): string {
   if (/([\d.]+ [A-Za-z]+) ago/.test(text))
     text = text.replace(/([\d.]+ [A-Za-z]+) ago/g, 'now - $1');
 
-  // Replace f or c with degF or degC
-  if (/(?<=[\s\d./])([fc])(?![A-Za-z])/.test(text)) {
-    text = text.replace(/(?<=[\s\d./])f(?![A-Za-z])/g, 'degF');
-    text = text.replace(/(?<=[\s\d./])c(?![A-Za-z])/g, 'degC');
-  }
+  // Replace f or c with degF or degC after a number or "to"/"in", unless it's a function call
+  text = text.replace(/(?<=(?:\d|\b(?:to|in))\s*)([fc])(?![A-Za-z])(?!\s*\()/g, (match, unit) => (unit === 'f' ? 'degF' : 'degC'));
   // Remove new line characters
   text = text.replace(/\\n/g, '');
 

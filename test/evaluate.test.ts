@@ -95,8 +95,7 @@ describe('evaluateLines', () => {
     expect(evaluateDoc(['10 USD in EUR', '$20 in £'])).toEqual(['9.00 EUR', '£16.00']);
   });
 
-  // Bug: f is rewritten to degF, so user functions named f break mid-expression
-  it.fails('calls a user function named f', () => {
+  it('calls a user function named f', () => {
     expect(evaluateDoc(['f(x) = x + 1', '2 * f(3)'])[1]).toBe('8');
   });
 

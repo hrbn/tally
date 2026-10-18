@@ -85,13 +85,14 @@ describe('preprocess', () => {
     ['cat', 'cat'],
     ['f(2)', 'f(2)'],
     ['c = 5', 'c = 5'],
+    ['100 f in c', '100 degF in degC'],
   ])('maps f and c to temperature units: %s', (input, expected) => {
     expect(preprocess(input)).toBe(expected);
   });
 
-  // Bug: a bare f or c after whitespace is treated as a temperature unit
-  it.fails.each([
+  it.each([
     ['2 * f(3)', '2 * f(3)'],
+    ['3 f(2)', '3 f(2)'],
     ['x = f(2) + 1', 'x = f(2) + 1'],
     ['a * c', 'a * c'],
   ])('leaves f and c alone when used as names: %s', (input, expected) => {
