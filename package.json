@@ -76,7 +76,8 @@
     "start": "vite",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
   },
   "type": "module",
   "version": "1.2.0"

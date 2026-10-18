@@ -30,6 +30,8 @@ To run locally, follow these steps:
 
 Run the test suite with `bun run test` (or `bun run test:coverage`). Use `bun run test`, not `bun test`: the suite runs on Vitest, not Bun's test runner.
 
+Check types with `bun run typecheck`.
+
 ## Technology Stack
 
 - TypeScript
