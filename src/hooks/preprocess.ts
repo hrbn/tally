@@ -15,6 +15,10 @@ function shiftDecimal(number: string, places: number): string {
 }
 
 export function preprocess(text: string): string {
+  // Remove commas from numbers before expanding magnitude suffixes
+  if (/(?<!\([^)]*)(?<!\[[^\]]*),(\d{3})/.test(text))
+    text = text.replace(/(?<!\([^)]*)(?<!\[[^\]]*),(\d{3})/g, '$1');
+
   // Expand thousands and millions suffixes
   text = text.replace(/(?<![\d.])(\d+(?:\.\d+)?)k\b/g, (match, number) => shiftDecimal(number, 3));
   text = text.replace(/(?<![\d.])(\d+(?:\.\d+)?)M\b/g, (match, number) => shiftDecimal(number, 6));
@@ -30,11 +34,6 @@ export function preprocess(text: string): string {
   // Remove comments
   if (/\/\/.*/.test(text))
     text = text.replace(/\/\/.*/g, '');
-
-  // Remove commas from numbers
-  if (/(?<!\([^)]*)(?<!\[[^\]]*),(\d{3})/.test(text))
-    text = text.replace(/(?<!\([^)]*)(?<!\[[^\]]*),(\d{3})/g, '$1');
-
 
   // Use currency codes instead of symbols
   Object.entries(currencySymbols).forEach(([code, symbol]) => {
