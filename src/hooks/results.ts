@@ -13,7 +13,7 @@ const useResultPlugin = (): () => import('@codemirror/state').Extension[] => {
     '.cm-line-result:hover': { background: '#a9dc7699', color: '#1d1f21', 'font-weight': 'bold' }
   });
 
-  const copyTextToClipboard = async (text: string): Promise<void> => {
+  const copyTextToClipboard = async (text: string): Promise<void | boolean> => {
     if ('clipboard' in navigator)
       return await navigator.clipboard.writeText(text);
 
@@ -21,10 +21,11 @@ const useResultPlugin = (): () => import('@codemirror/state').Extension[] => {
 
   };
 
-  const copyOnClick = (e: MouseEvent): void => {
-    if (e.target && 'parentElement' in e.target && e.target.parentElement.classList.contains('cm-line-result')) {
-      copyTextToClipboard((e.target as HTMLElement).textContent || '');
-      toast(`Copied "${ (e.target as HTMLElement).textContent }"`);
+  const copyOnClick = (e: Event): void => {
+    const target = e.target as HTMLElement | null;
+    if (target?.parentElement?.classList.contains('cm-line-result')) {
+      copyTextToClipboard(target.textContent || '');
+      toast(`Copied "${ target.textContent }"`);
     }
   };
 

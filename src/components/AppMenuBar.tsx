@@ -26,22 +26,14 @@ import useFormatter from '../hooks/format';
 import { useTheme } from '../hooks/theme';
 import type { BoxProps } from '@mui/joy/Box';
 import type { SvgIconProps } from '@mui/joy/SvgIcon';
-import type { ReactCodeMirrorProps} from '@uiw/react-codemirror';
 
 const themeOptions = ['dark', 'light']
   .concat(Object.keys(alls))
   .filter((item) => typeof alls[item as keyof typeof alls] !== 'function')
-  .filter((item) => !/^(defaultSettings)/.test(item as keyof typeof alls));
+  .filter((item) => !/^(defaultSettings)/.test(item));
 
-type CalcContextType = {
-  doc: string;
-  lines: string[];
-  results: Map<number, any>;
-  settings: {
-    theme: ReactCodeMirrorProps['theme'];
-  };
-  setDoc: React.Dispatch<React.SetStateAction<string>>;
-  setSettings: React.Dispatch<React.SetStateAction<any>>;
+type HeaderProps = BoxProps & {
+  bg?: string;
 };
 
 const saveToFile = (content: string) => {
@@ -70,7 +62,7 @@ const TallyIcon = (props: SvgIconProps) => (
   </SvgIcon>
 );
 
-const Header = (props: BoxProps) => (
+const Header = ({ bg, ...props }: HeaderProps) => (
   <Box
     component="header"
     className="Header"
@@ -79,7 +71,7 @@ const Header = (props: BoxProps) => (
       {
         p: 2,
         gap: 2,
-        bgcolor: props.bg,
+        bgcolor: bg,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -95,22 +87,22 @@ const Header = (props: BoxProps) => (
   />
 );
 
-export default function MenuToolbar(props: BoxProps) {
+export default function MenuToolbar(props: HeaderProps) {
   const inputEl = useRef<HTMLInputElement | null>(null);
-  const { doc, lines, results, setDoc, settings, setSettings } = useCalc() as CalcContextType;
+  const { doc, lines, results, setDoc } = useCalc();
   const { format } = useFormatter();
   const [file, setFile] = useState<File | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
-    let fileReader,
+    let fileReader: FileReader | undefined,
       isCancel = false;
     if (file) {
       fileReader = new FileReader();
       fileReader.onload = (e) => {
-        const { result } = e.target;
-        if (result && !isCancel) 
+        const result = e.target?.result;
+        if (typeof result === 'string' && result && !isCancel) 
           setDoc(result);
         
       };
@@ -129,18 +121,18 @@ export default function MenuToolbar(props: BoxProps) {
   };
 
   const DownloadFileResults = () => {
-    const docWithResults = [...results.values()].map((v: string, i: string) => (v === null ? `${lines[i]}` : `${lines[i]} = ${format(v)}`)).join('\n');
+    const docWithResults = [...results.values()].map((v, i) => (v === null ? `${lines[i]}` : `${lines[i]} = ${format(v)}`)).join('\n');
     saveToFile(docWithResults);
   };
 
   const CopyFileResults = () => {
-    const docWithResults = [...results.values()].map((v: string, i: string) => (v === null ? `${lines[i]}` : `${lines[i]} = ${format(v)}`)).join('\n');
+    const docWithResults = [...results.values()].map((v, i) => (v === null ? `${lines[i]}` : `${lines[i]} = ${format(v)}`)).join('\n');
     copyTextToClipboard(docWithResults);
     toast('Copied file with results');
   };
 
   const UploadFile = () => {
-    inputEl.current.click();
+    inputEl.current?.click();
   };
 
   const OpenDemoText = () => {
@@ -148,7 +140,7 @@ export default function MenuToolbar(props: BoxProps) {
   };
 
   const handleColorschemeChange = (event: React.SyntheticEvent | null, newValue: string | null) => {
-    setTheme(newValue as ReactCodeMirrorProps['theme']);
+    if (newValue) setTheme(newValue);
   };
 
   const toggleDrawer = (isOpen: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {

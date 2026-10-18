@@ -1,4 +1,3 @@
-import { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import { useEffect } from 'react';
 import { useLocalStorage } from 'usehooks-ts';
 
@@ -7,8 +6,9 @@ export function useTheme() {
 
   useEffect(() => {
     document.addEventListener('colorschemechange', (e) => {
-      console.log('colorschemechange: ', e.detail.colorScheme);
-      setTheme(e.detail.colorScheme as ReactCodeMirrorProps['theme']);
+      const { colorScheme } = (e as CustomEvent<{ colorScheme: string }>).detail;
+      console.log('colorschemechange: ', colorScheme);
+      setTheme(colorScheme);
     });
   }, []);
   return { theme, setTheme };

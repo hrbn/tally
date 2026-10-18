@@ -1,16 +1,16 @@
 import { ReactNode, createContext, useContext, useEffect, useReducer } from 'react';
 
 import CalcReducer, { initialState } from './reducer';
+import type { State } from './reducer';
 import { Maths } from './components/Maths';
 
-interface CalcState {
-  math: null;
-  doc: string;
-  lines: string[];
-  results: Map<any, any>;
+interface CalcState extends State {
+  setDoc: (doc: string) => void;
+  setLines: (lines: string[]) => void;
+  setResults: (results: Map<number, any>) => void;
 }
 
-const CalcContext = createContext<CalcState | undefined>(initialState);
+const CalcContext = createContext<CalcState | undefined>(undefined);
 
 interface CalcProviderProps {
   children: ReactNode;
@@ -48,7 +48,7 @@ const CalcProvider: React.FC<CalcProviderProps> = ({ children }) => {
     });
   };
 
-  const setResults = (results: Map<any, any>) => {
+  const setResults = (results: Map<number, any>) => {
     dispatch({
       type: 'SET_RESULTS',
       payload: {
