@@ -71,7 +71,7 @@
     "deploy": "gh-pages -d dist",
     "mkicons": "pwa-asset-generator ./src/images/logo.svg ./public/images --background \"linear-gradient(to top, #9ccc65 0%, #d4e157 100%)\" --index index.html --log --favicon --mstile --icon-only",
     "mksplash": "pwa-asset-generator ./src/images/logo_splash.svg ./public/images --background \"#131318\" --index index.html --log --splash --splash-only --padding \"calc(50vh - 5%) calc(50vw - 10%)\" --scrape false",
-    "predeploy": "yarn build",
+    "predeploy": "bun run build",
     "preview": "vite preview",
     "start": "vite",
     "test": "vitest run",
