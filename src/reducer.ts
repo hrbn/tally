@@ -1,12 +1,11 @@
-import { useState } from 'react';
-import { ReactCodeMirrorProps } from '@uiw/react-codemirror';
+import type { MathJsStatic } from 'mathjs';
 
 
 export interface State {
-  math: null | string;
+  math: MathJsStatic | null;
   doc: string;
   lines: string[];
-  results: Map<string, any>;
+  results: Map<number, any>;
 };
 
 
@@ -14,14 +13,14 @@ export const initialState: State = {
   math: null,
   doc: localStorage.getItem('doc') || '',
   lines: [],
-  results: new Map<string, any>()
+  results: new Map<number, any>()
 };
 
 export type Action =
-  | { type: 'SET_MATH'; payload: { math: null | string; }; }
+  | { type: 'SET_MATH'; payload: { math: MathJsStatic | null; }; }
   | { type: 'SET_DOC'; payload: { doc: string; }; }
   | { type: 'SET_LINES'; payload: { lines: string[]; }; }
-  | { type: 'SET_RESULTS'; payload: { results: Map<string, any>; }; };
+  | { type: 'SET_RESULTS'; payload: { results: Map<number, any>; }; };
 
 const CalcReducer = (state: State, action: Action): State => {
   const { type, payload } = action;

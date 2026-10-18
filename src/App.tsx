@@ -9,20 +9,22 @@ import Editor from './components/Editor';
 import { Toaster } from 'react-hot-toast';
 import { useTheme } from './hooks/theme';
 
+const themes: Record<string, any> = alls;
+
 const getThemeObjects = () => {
-  let themeObjects = {};
+  const themeObjects: Record<string, { palette: { background: { default: string } } }> = {};
   ['dark', 'light']
     .concat(Object.keys(alls))
-    .filter((item) => typeof alls[item as keyof typeof alls] !== 'function')
-    .filter((item) => /^(defaultSettings)/.test(item as keyof typeof alls))
+    .filter((item) => typeof themes[item] !== 'function')
+    .filter((item) => /^(defaultSettings)/.test(item))
     .forEach((item) => {
-      let key = item as keyof typeof alls;
+      let key = item;
       key = key.replace(/^(defaultSettings)/, '');
       key = key.charAt(0).toLowerCase() + key.slice(1);
       themeObjects[key] = {
         palette: {
           background: {
-            default: alls[item].background
+            default: themes[item].background
           }
         }
       };
@@ -38,11 +40,11 @@ const getBackground = (aTheme: string) => {
   const themeRegex = new RegExp(`${aTheme}$`, 'i');
   const defaults = ['dark', 'light']
     .concat(Object.keys(alls))
-    .filter((item) => typeof alls[item as keyof typeof alls] !== 'function')
-    .filter((item) => /^(defaultSettings)/.test(item as keyof typeof alls))
-    .filter((item) => themeRegex.test(item as keyof typeof alls))
+    .filter((item) => typeof themes[item] !== 'function')
+    .filter((item) => /^(defaultSettings)/.test(item))
+    .filter((item) => themeRegex.test(item))
     .map((item) => {
-      return alls[item].background;
+      return themes[item].background;
     })[0];
   return defaults;
 };

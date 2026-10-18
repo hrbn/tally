@@ -8,6 +8,7 @@ import { monokai } from '../helpers/monokai';
 import { useTheme } from '../hooks/theme';
 
 import * as alls from '@uiw/codemirror-themes-all';
+import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import { StreamLanguage } from '@codemirror/language';
 import Box from '@mui/joy/Box';
@@ -23,7 +24,7 @@ interface EditorProps extends BoxProps {
 const Editor: FC<EditorProps> = (props) => {
   // eslint-disable-next-line no-unused-vars
   const [currentLine, setCurrentLine] = useState<number | null>(null);
-  const { doc, lines, setDoc, setLines, settings } = useCalc();
+  const { doc, lines, setDoc, setLines } = useCalc();
   const { evaluate } = useEvaluator();
   const { theme, setTheme } = useTheme();
   const [init, setInit] = useState(false);
@@ -41,12 +42,12 @@ const Editor: FC<EditorProps> = (props) => {
     setLines(Array.from(viewUpdate.state.doc.iterLines()));
 
     localStorage.setItem('doc', value);
-    const cursorLine = viewUpdate.state.doc.lineAt(viewUpdate.state.selection.ranges[0].from).number;
+    const cursorLine = viewUpdate.state.doc.lineAt(viewUpdate.state.selection.main.from).number;
     setCurrentLine(cursorLine);
   };
 
   const onUpdate = useCallback((viewUpdate: ViewUpdate) => {
-    const cursorLine = viewUpdate.state.doc.lineAt(viewUpdate.state.selection.ranges[0].from).number;
+    const cursorLine = viewUpdate.state.doc.lineAt(viewUpdate.state.selection.main.from).number;
     setCurrentLine(cursorLine);
   }, []);
 
@@ -72,7 +73,7 @@ const Editor: FC<EditorProps> = (props) => {
           indentOnInput: true
         }}
         extensions={[StreamLanguage.define(mathjs), lineResults(), EditorView.lineWrapping]}
-        theme={alls[theme as keyof typeof alls] || theme}
+        theme={((alls as Record<string, any>)[theme] || theme) as ReactCodeMirrorProps['theme']}
         onChange={onChange}
         onUpdate={onUpdate}
         height="100%"

@@ -71,7 +71,7 @@ export function evaluateLines(math: MathJsStatic, lines: string[], scope: Record
       const datapoints: string[] = [];
       for (let thisLine = lineNumber - 1; thisLine >= 0; thisLine--) {
         const result = results.get(thisLine);
-        if (result === undefined || result === null || aggregationPattern.test(lines[thisLine].trim()))
+        if (result === undefined || result === null || aggregationPattern.test((lines[thisLine] ?? '').trim()))
           if (datapoints.length > 0)
             break;
           else

@@ -2,8 +2,8 @@ import sortedKeywords, { units, functions, constants, builtins, operatorKeywords
 
 function words(array: string[]): Record<string, boolean> {
   var keys: Record<string, boolean> = {};
-  for (var i = 0; i < array.length; ++i) {
-    keys[array[i]] = true;
+  for (const key of array) {
+    keys[key] = true;
   }
   return keys;
 }
