@@ -6,6 +6,7 @@ process.env.TZ = 'UTC';
 export default defineConfig({
   test: {
     include: ['test/**/*.test.ts'],
-    environment: 'node'
+    environment: 'node',
+    setupFiles: ['test/setup.ts']
   }
 });

@@ -5,17 +5,6 @@ import { Maths } from '../src/components/Maths';
 import { evaluateLines } from '../src/hooks/evaluate';
 import { format } from '../src/hooks/format';
 
-// The context module reads localStorage on import; these tests don't need it
-vi.mock('../src/context', () => ({ useCalc: vi.fn() }));
-
-vi.mock('../src/data/currency', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('../src/data/currency')>()),
-  fetchExchangeRates: async () => ({
-    base: 'USD',
-    rates: { USD: 1, EUR: 0.9, GBP: 0.8, JPY: 150, CAD: 1.35, BTC: 0.00002 },
-  }),
-}));
-
 beforeAll(() => {
   vi.useFakeTimers({ toFake: ['Date'] });
   vi.setSystemTime(new Date('2026-01-15T12:00:00Z'));
