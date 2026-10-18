@@ -61,8 +61,7 @@ describe('evaluateLines', () => {
       expect(evaluateDoc(['1,000', '2,000', 'sum'])[2]).toBe('3,000');
     });
 
-    // Bug: "$" in the replacement string is read as a capture group reference
-    it.fails('sums currency values', () => {
+    it('sums currency values', () => {
       expect(evaluateDoc(['$5', '$10', 'sum'])[2]).toBe('$15.00');
     });
   });

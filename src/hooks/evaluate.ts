@@ -80,7 +80,8 @@ export function evaluateLines(math: MathJsStatic, lines: string[], scope: Record
       else
         aggregateStr = `${ datapoints.join('+') }`;
 
-      return line.replace(aggregationPattern, `(${ aggregateStr })`);
+      // A replacer function keeps "$" in currency values from being read as a capture group
+      return line.replace(aggregationPattern, () => `(${ aggregateStr })`);
     }
     return line;
   }
