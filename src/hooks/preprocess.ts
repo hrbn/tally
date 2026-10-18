@@ -3,13 +3,21 @@
  */
 import { currencySymbols } from '../data/currency';
 
+/**
+ * Multiply a decimal string by a power of ten by shifting its decimal point
+ */
+function shiftDecimal(number: string, places: number): string {
+  const [whole = '', fraction = ''] = number.split('.');
+  const padded = fraction.padEnd(places, '0');
+  const shiftedWhole = (whole + padded.slice(0, places)).replace(/^0+(?=\d)/, '');
+  const shiftedFraction = padded.slice(places);
+  return shiftedFraction ? `${ shiftedWhole }.${ shiftedFraction }` : shiftedWhole;
+}
+
 export function preprocess(text: string): string {
-  if (/(?<=\d)k\b/.test(text))
-    text = text.replace(/(?<=\d)k\b/g, '000');
-
-
-  if (/(?<=\d)M\b/.test(text))
-    text = text.replace(/(?<=\d)M\b/g, '000000');
+  // Expand thousands and millions suffixes
+  text = text.replace(/(?<![\d.])(\d+(?:\.\d+)?)k\b/g, (match, number) => shiftDecimal(number, 3));
+  text = text.replace(/(?<![\d.])(\d+(?:\.\d+)?)M\b/g, (match, number) => shiftDecimal(number, 6));
 
   // Pass dates to date function
   if (/(?<!date\(\s*"?\s*\d{0,3})\b\d{1,4}[-/]\d{1,2}[-/]\d{1,4}( \d{1,2}:\d{2}(:\d{2})?( [AP]M)?( [A-Z]{3})?)?/.test(text))

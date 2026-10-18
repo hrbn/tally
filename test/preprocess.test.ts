@@ -8,16 +8,13 @@ describe('preprocess', () => {
     ['2M', '2000000'],
     ['5k USD', '5000 USD'],
     ['5km', '5km'],
-  ])('expands magnitude suffixes: %s', (input, expected) => {
-    expect(preprocess(input)).toBe(expected);
-  });
-
-  // Bug: the suffix is replaced with zeros, so 1.5k becomes 1.5000
-  it.fails.each([
     ['1.5k', '1500'],
     ['0.5k', '500'],
     ['1.5M', '1500000'],
-  ])('expands decimal magnitude suffixes: %s', (input, expected) => {
+    ['1.23456k', '1234.56'],
+    ['0.0005k', '0.5'],
+    ['1.5k + 2M', '1500 + 2000000'],
+  ])('expands magnitude suffixes: %s', (input, expected) => {
     expect(preprocess(input)).toBe(expected);
   });
 
