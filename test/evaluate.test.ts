@@ -36,8 +36,7 @@ describe('evaluateLines', () => {
       expect(evaluateDoc(['1', '2', '3', keyword])[3]).toBe(expected);
     });
 
-    // Bug: only the last value is divided, e.g. (3+2+1 / 3)
-    it.fails.each([
+    it.each([
       ['avg', '2'],
       ['average', '2'],
       ['mean', '2'],
@@ -63,6 +62,10 @@ describe('evaluateLines', () => {
 
     it('sums currency values', () => {
       expect(evaluateDoc(['$5', '$10', 'sum'])[2]).toBe('$15.00');
+    });
+
+    it('averages currency values', () => {
+      expect(evaluateDoc(['$5', '$10', 'avg'])[2]).toBe('$7.50');
     });
   });
 

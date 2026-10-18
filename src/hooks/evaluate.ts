@@ -76,7 +76,7 @@ export function evaluateLines(math: MathJsStatic, lines: string[], scope: Record
         datapoints.push(format(math, result, settingsClone));
       }
       if (averagePattern.test(line))
-        aggregateStr = `${ datapoints.join('+') } / ${ datapoints.length }`;
+        aggregateStr = `(${ datapoints.join('+') }) / ${ datapoints.length }`;
       else
         aggregateStr = `${ datapoints.join('+') }`;
 
