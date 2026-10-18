@@ -101,8 +101,10 @@ describe('evaluateLines', () => {
     expect(evaluateDoc(['f(x) = x + 1', '2 * f(3)'])[1]).toBe('8');
   });
 
-  // Bug: results hold a reference to the matrix, so later edits change earlier results
-  it.fails('keeps each result as it was when its line ran', () => {
-    expect(evaluateDoc(['b = zeros(2, 2)', 'b[1, 1] = 5'])[0]).toBe('[[0, 0], [0, 0]]');
+  it.each([
+    [['b = zeros(2, 2)', 'b[1, 1] = 5'], '[[0, 0], [0, 0]]'],
+    [['o = {a: 1}', 'o.a = 2'], '{"a": 1}'],
+  ])('keeps each result as it was when its line ran: %j', (lines, expected) => {
+    expect(evaluateDoc(lines)[0]).toBe(expected);
   });
 });

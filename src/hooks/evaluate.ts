@@ -43,7 +43,8 @@ export function evaluateLines(math: MathJsStatic, lines: string[], scope: Record
         const result = compiled.evaluate(scope);
         if (typeof result !== 'function' && typeof result !== 'undefined') {
           scope.last = result;
-          return result;
+          // Later lines can modify matrices and objects in place, so keep a copy of this line's value
+          return isMutable(result) ? math.clone(result) : result;
         }
         return null;
 
@@ -52,6 +53,10 @@ export function evaluateLines(math: MathJsStatic, lines: string[], scope: Record
       }
 
     return null;
+  }
+
+  function isMutable(value: any): boolean {
+    return math.isMatrix(value) || Array.isArray(value) || value?.constructor === Object;
   }
 
   function aggregate(line: string, lineNumber: number): string {
