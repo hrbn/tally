@@ -1,21 +1,18 @@
-import { useState, useCallback, useEffect, useMemo, useRef, FC } from 'react';
-import { useCalc } from '../context';
-import CodeMirror, { useCodeMirror } from '@uiw/react-codemirror';
-import { EditorView, ViewUpdate } from '@codemirror/view';
+import { StreamLanguage } from '@codemirror/language';
 import { StateEffect } from '@codemirror/state';
-import useResultPlugin from '../hooks/results';
-import { monokai } from '../helpers/monokai';
-import { useTheme } from '../hooks/theme';
-
+import { EditorView, ViewUpdate } from '@codemirror/view';
+import { BoxProps } from '@mui/joy';
+import Box from '@mui/joy/Box';
 import * as alls from '@uiw/codemirror-themes-all';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
-
-import { StreamLanguage } from '@codemirror/language';
-import Box from '@mui/joy/Box';
-import { BoxProps } from '@mui/joy';
-
+import CodeMirror, { useCodeMirror } from '@uiw/react-codemirror';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCalc } from '../context';
+import { monokai } from '../helpers/monokai';
 import { mathjs } from '../helpers/syntax';
 import useEvaluator from '../hooks/evaluate';
+import useResultPlugin from '../hooks/results';
+import { useTheme } from '../hooks/theme';
 
 interface EditorProps extends BoxProps {
   // Define additional props here if needed
@@ -70,7 +67,7 @@ const Editor: FC<EditorProps> = (props) => {
           foldGutter: false,
           dropCursor: true,
           allowMultipleSelections: false,
-          indentOnInput: true
+          indentOnInput: true,
         }}
         extensions={[StreamLanguage.define(mathjs), lineResults(), EditorView.lineWrapping]}
         theme={((alls as Record<string, any>)[theme] || theme) as ReactCodeMirrorProps['theme']}

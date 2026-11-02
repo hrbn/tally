@@ -1,8 +1,7 @@
-import { ReactNode, createContext, useContext, useEffect, useReducer } from 'react';
-
-import CalcReducer, { initialState } from './reducer';
-import type { State } from './reducer';
+import { createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
 import { Maths } from './components/Maths';
+import type { State } from './reducer';
+import CalcReducer, { initialState } from './reducer';
 
 interface CalcState extends State {
   setDoc: (doc: string) => void;
@@ -24,8 +23,8 @@ const CalcProvider: React.FC<CalcProviderProps> = ({ children }) => {
       dispatch({
         type: 'SET_MATH',
         payload: {
-          math
-        }
+          math,
+        },
       });
     });
   }, []);
@@ -34,8 +33,8 @@ const CalcProvider: React.FC<CalcProviderProps> = ({ children }) => {
     dispatch({
       type: 'SET_DOC',
       payload: {
-        doc
-      }
+        doc,
+      },
     });
   };
 
@@ -43,8 +42,8 @@ const CalcProvider: React.FC<CalcProviderProps> = ({ children }) => {
     dispatch({
       type: 'SET_LINES',
       payload: {
-        lines
-      }
+        lines,
+      },
     });
   };
 
@@ -52,8 +51,8 @@ const CalcProvider: React.FC<CalcProviderProps> = ({ children }) => {
     dispatch({
       type: 'SET_RESULTS',
       payload: {
-        results
-      }
+        results,
+      },
     });
   };
 
@@ -64,7 +63,7 @@ const CalcProvider: React.FC<CalcProviderProps> = ({ children }) => {
     results: state.results,
     setDoc,
     setLines,
-    setResults
+    setResults,
   };
   return <CalcContext.Provider value={value}>{children}</CalcContext.Provider>;
 };
@@ -77,4 +76,4 @@ const useCalc = (): CalcState => {
   return context;
 };
 
-export { useCalc, CalcProvider };
+export { CalcProvider, useCalc };

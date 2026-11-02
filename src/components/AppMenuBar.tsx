@@ -1,31 +1,27 @@
-
-import IconButton from '@mui/joy/IconButton';
+import MoreVert from '@mui/icons-material/MoreVert';
+import type { BoxProps } from '@mui/joy/Box';
+import Box from '@mui/joy/Box';
+import Drawer from '@mui/joy/Drawer';
+import Dropdown from '@mui/joy/Dropdown';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
+import IconButton from '@mui/joy/IconButton';
 import ListDivider from '@mui/joy/ListDivider';
-import Dropdown from '@mui/joy/Dropdown';
 import Menu from '@mui/joy/Menu';
 import MenuButton from '@mui/joy/MenuButton';
 import MenuItem from '@mui/joy/MenuItem';
-import MoreVert from '@mui/icons-material/MoreVert';
-import Box from '@mui/joy/Box';
-import Drawer from '@mui/joy/Drawer';
 import Option from '@mui/joy/Option';
 import Select from '@mui/joy/Select';
+import type { SvgIconProps } from '@mui/joy/SvgIcon';
 import SvgIcon from '@mui/joy/SvgIcon';
 import Typography from '@mui/joy/Typography';
-
-
 import * as alls from '@uiw/codemirror-themes-all';
 import React, { useEffect, useRef, useState } from 'react';
-
 import toast from 'react-hot-toast';
 import { useCalc } from '../context';
 import demoContent from '../data/demo';
 import useFormatter from '../hooks/format';
 import { useTheme } from '../hooks/theme';
-import type { BoxProps } from '@mui/joy/Box';
-import type { SvgIconProps } from '@mui/joy/SvgIcon';
 
 const themeOptions = ['dark', 'light']
   .concat(Object.keys(alls))
@@ -47,11 +43,9 @@ const saveToFile = (content: string) => {
 };
 
 const copyTextToClipboard = async (text: string) => {
-  if ('clipboard' in navigator) 
-    return await navigator.clipboard.writeText(text);
-   
+  if ('clipboard' in navigator) return await navigator.clipboard.writeText(text);
+
   return document.execCommand('copy', true, text);
-  
 };
 
 const TallyIcon = (props: SvgIconProps) => (
@@ -102,17 +96,13 @@ export default function MenuToolbar(props: HeaderProps) {
       fileReader = new FileReader();
       fileReader.onload = (e) => {
         const result = e.target?.result;
-        if (typeof result === 'string' && result && !isCancel) 
-          setDoc(result);
-        
+        if (typeof result === 'string' && result && !isCancel) setDoc(result);
       };
       fileReader.readAsText(file);
     }
     return () => {
       isCancel = true;
-      if (fileReader && fileReader.readyState === 1) 
-        fileReader.abort();
-      
+      if (fileReader && fileReader.readyState === 1) fileReader.abort();
     };
   }, [file]);
 
@@ -121,12 +111,16 @@ export default function MenuToolbar(props: HeaderProps) {
   };
 
   const DownloadFileResults = () => {
-    const docWithResults = [...results.values()].map((v, i) => (v === null ? `${lines[i]}` : `${lines[i]} = ${format(v)}`)).join('\n');
+    const docWithResults = [...results.values()]
+      .map((v, i) => (v === null ? `${lines[i]}` : `${lines[i]} = ${format(v)}`))
+      .join('\n');
     saveToFile(docWithResults);
   };
 
   const CopyFileResults = () => {
-    const docWithResults = [...results.values()].map((v, i) => (v === null ? `${lines[i]}` : `${lines[i]} = ${format(v)}`)).join('\n');
+    const docWithResults = [...results.values()]
+      .map((v, i) => (v === null ? `${lines[i]}` : `${lines[i]} = ${format(v)}`))
+      .join('\n');
     copyTextToClipboard(docWithResults);
     toast('Copied file with results');
   };
@@ -144,9 +138,11 @@ export default function MenuToolbar(props: HeaderProps) {
   };
 
   const toggleDrawer = (isOpen: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
-    if (event.type === 'keydown' && ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')) 
+    if (
+      event.type === 'keydown' &&
+      ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')
+    )
       return;
-    
 
     setDrawerOpen(isOpen);
   };

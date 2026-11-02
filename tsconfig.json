@@ -1,16 +1,8 @@
 {
-  "include": [
-    "src",
-    "test"
-  ],
-  "exclude": [
-    "node_modules"
-  ],
+  "include": ["src", "test"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
-    "lib": [
-      "es2022",
-      "dom"
-    ],
+    "lib": ["es2022", "dom"],
     "module": "esnext",
     "target": "esnext",
     "jsx": "preserve",
@@ -21,8 +13,6 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "noUncheckedIndexedAccess": true,
-    "types": [
-      "vite/client"
-    ],
+    "types": ["vite/client"]
   }
 }

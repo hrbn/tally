@@ -16,14 +16,14 @@ export default defineConfig({
         'src/hooks/format.ts',
         'src/hooks/evaluate.ts',
         'src/components/Maths.ts',
-        'src/data/currency.ts'
+        'src/data/currency.ts',
       ],
       reporter: ['text', 'html'],
       // Set just below current coverage so regressions fail the run
       statements: 85,
       lines: 85,
       branches: 90,
-      functions: 50
-    }
-  }
+      functions: 50,
+    },
+  },
 });

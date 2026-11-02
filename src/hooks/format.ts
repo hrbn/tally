@@ -1,7 +1,6 @@
 import type { MathJsStatic } from 'mathjs';
-
-import { currencySymbols, currencyUnits } from '../data/currency';
 import { useCalc } from '../context';
+import { currencySymbols, currencyUnits } from '../data/currency';
 
 export interface FormatterSettings {
   lowerExp: number;
@@ -12,7 +11,11 @@ export interface FormatterSettings {
   trimTrailingZeros: boolean;
 }
 
-export function format(math: MathJsStatic, value: any, formatterSettings: FormatterSettings = defaultFormatterSettings()): any {
+export function format(
+  math: MathJsStatic,
+  value: any,
+  formatterSettings: FormatterSettings = defaultFormatterSettings(),
+): any {
   if (value instanceof Date) {
     if (value.getHours() || value.getMinutes() || value.getSeconds() || value.getMilliseconds())
       return value.toLocaleString();
@@ -37,26 +40,18 @@ export function format(math: MathJsStatic, value: any, formatterSettings: Format
     let output = math.format(number, options);
 
     if (formatterSettings.trimTrailingZeros)
-      if (/^-?\d+\.\d+$/.test(output))
-        output = output.replace(/0+$/, '').replace(/\.$/, '');
-
-
+      if (/^-?\d+\.\d+$/.test(output)) output = output.replace(/0+$/, '').replace(/\.$/, '');
 
     if (formatterSettings.displayCommas)
-      if (/^-?\d+(\.\d+)?$/.test(output))
-        output = output.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
-
-
+      if (/^-?\d+(\.\d+)?$/.test(output)) output = output.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
 
     return output;
   });
 
   Object.entries(currencySymbols).forEach(([code, symbol]) => {
     symbol += symbol === '$' ? '$' : '';
-    const replaceRegex = new RegExp(`\\b([\\d\\.\\,]+) ${ code }`, 'g');
-    if (replaceRegex.test(stringOutput))
-      stringOutput = stringOutput.replace(replaceRegex, `${ symbol }$1`);
-
+    const replaceRegex = new RegExp(`\\b([\\d\\.\\,]+) ${code}`, 'g');
+    if (replaceRegex.test(stringOutput)) stringOutput = stringOutput.replace(replaceRegex, `${symbol}$1`);
   });
 
   return stringOutput;
@@ -91,7 +86,7 @@ const useFormatter = (): {
 
   return {
     format: (value, formatterSettings) => format(math as unknown as MathJsStatic, value, formatterSettings),
-    defaultFormatterSettings
+    defaultFormatterSettings,
   };
 };
 

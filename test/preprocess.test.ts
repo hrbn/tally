@@ -106,11 +106,7 @@ describe('preprocess', () => {
     expect(preprocess(input)).toBe(expected);
   });
 
-  it.each([
-    ['sqrt(25)'],
-    ['5.5 inch to cm'],
-    ['abc'],
-  ])('passes plain expressions through: %s', (input) => {
+  it.each([['sqrt(25)'], ['5.5 inch to cm'], ['abc']])('passes plain expressions through: %s', (input) => {
     expect(preprocess(input)).toBe(input);
   });
 });

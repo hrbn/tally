@@ -5,7 +5,11 @@ import { useCalc } from '../context';
 import { defaultFormatterSettings, format } from './format';
 import { preprocess } from './preprocess';
 
-export function evaluateLines(math: MathJsStatic, lines: string[], scope: Record<string, any> = defaultScope()): Map<number, any> {
+export function evaluateLines(
+  math: MathJsStatic,
+  lines: string[],
+  scope: Record<string, any> = defaultScope(),
+): Map<number, any> {
   const results = new Map<number, any>();
   const formatterSettings = defaultFormatterSettings();
 
@@ -20,15 +24,14 @@ export function evaluateLines(math: MathJsStatic, lines: string[], scope: Record
 
     if (!trimmed.length) return null;
 
-    if (trimmed.charAt(0).match(/[+\-*/]/) && lines[lineNumber - 1] !== '') trimmed = `last ${ trimmed }`;
+    if (trimmed.charAt(0).match(/[+\-*/]/) && lines[lineNumber - 1] !== '') trimmed = `last ${trimmed}`;
 
     if (trimmed.match(/\bline(\d+)\b/))
       try {
-        trimmed = trimmed.replace(/\bline(\d+)\b/g, (match, p1) => `(${ results.get(Number(p1) - 1) })`);
+        trimmed = trimmed.replace(/\bline(\d+)\b/g, (match, p1) => `(${results.get(Number(p1) - 1)})`);
       } catch (e) {
         return null;
       }
-
 
     const aggregated = aggregate(trimmed, lineNumber);
     const preprocessed = preprocess(aggregated);
@@ -47,7 +50,6 @@ export function evaluateLines(math: MathJsStatic, lines: string[], scope: Record
           return isMutable(result) ? math.clone(result) : result;
         }
         return null;
-
       } catch (error) {
         return null;
       }
@@ -72,27 +74,22 @@ export function evaluateLines(math: MathJsStatic, lines: string[], scope: Record
       for (let thisLine = lineNumber - 1; thisLine >= 0; thisLine--) {
         const result = results.get(thisLine);
         if (result === undefined || result === null || aggregationPattern.test((lines[thisLine] ?? '').trim()))
-          if (datapoints.length > 0)
-            break;
-          else
-            continue;
-
+          if (datapoints.length > 0) break;
+          else continue;
 
         datapoints.push(format(math, result, settingsClone));
       }
-      if (averagePattern.test(line))
-        aggregateStr = `(${ datapoints.join('+') }) / ${ datapoints.length }`;
-      else
-        aggregateStr = `${ datapoints.join('+') }`;
+      if (averagePattern.test(line)) aggregateStr = `(${datapoints.join('+')}) / ${datapoints.length}`;
+      else aggregateStr = `${datapoints.join('+')}`;
 
       // A replacer function keeps "$" in currency values from being read as a capture group
-      return line.replace(aggregationPattern, () => `(${ aggregateStr })`);
+      return line.replace(aggregationPattern, () => `(${aggregateStr})`);
     }
     return line;
   }
 }
 
-const useEvaluator = (): { evaluate: () => void; } => {
+const useEvaluator = (): { evaluate: () => void } => {
   const { math, lines, setResults } = useCalc();
 
   function evaluate() {

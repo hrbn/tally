@@ -1,4 +1,4 @@
-import sortedKeywords, { units, functions, constants, builtins, operatorKeywords } from '../data/keywords';
+import sortedKeywords, { builtins, constants, functions, operatorKeywords, units } from '../data/keywords';
 
 function words(array: string[]): Record<string, boolean> {
   var keys: Record<string, boolean> = {};
@@ -83,7 +83,7 @@ function tokenString(quote: string): (stream: any, state: any) => string {
 
 export const mathjs = {
   name: 'mathjs',
-  startState: function (): { tokenize: null; } {
+  startState: function (): { tokenize: null } {
     return { tokenize: null };
   },
 
@@ -97,6 +97,6 @@ export const mathjs = {
   languageData: {
     autocomplete: sortedKeywords,
     closeBrackets: { brackets: ['(', '[', '{', "'", '"', '`'] },
-    commentTokens: { line: '#' }
-  }
+    commentTokens: { line: '#' },
+  },
 };

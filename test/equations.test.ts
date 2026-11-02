@@ -23,7 +23,7 @@ it('evaluates test/equations.txt', async () => {
   const transcript = lines
     .map((line, lineNumber) => {
       const result = results.get(lineNumber);
-      return `${ line.padEnd(width) }  =>  ${ result === null ? '' : format(math, result) }`.trimEnd();
+      return `${line.padEnd(width)}  =>  ${result === null ? '' : format(math, result)}`.trimEnd();
     })
     .join('\n');
 
