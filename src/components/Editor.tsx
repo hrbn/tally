@@ -22,7 +22,7 @@ interface EditorProps extends BoxProps {
 }
 
 const Editor: FC<EditorProps> = (props) => {
-  // eslint-disable-next-line no-unused-vars
+  // biome-ignore lint/correctness/noUnusedVariables: cursor line is tracked but not displayed yet
   const [currentLine, setCurrentLine] = useState<number | null>(null);
   const { doc, lines, setDoc, setLines } = useCalc();
   const { evaluate } = useEvaluator();
@@ -32,9 +32,9 @@ const Editor: FC<EditorProps> = (props) => {
   const lineResults = useResultPlugin();
   const extensions = [StreamLanguage.define(mathjs), lineResults(), EditorView.lineWrapping];
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: re-evaluate only when the lines change or the editor finishes loading
   useEffect(() => {
     evaluate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lines, init]);
 
   const onChange = (value: string, viewUpdate: ViewUpdate) => {

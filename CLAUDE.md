@@ -15,7 +15,9 @@ Bun is the package manager, but Vite and Vitest run on Node 20.
 - `bun run test:coverage`: enforces the thresholds in `vitest.config.ts` (set just below current coverage, so drops fail the run)
 - `bun run typecheck`: `tsc --noEmit`
 
-There is no lint script. Style rules are in `.eslintrc.json`; match the existing code (e.g. no braces around single-statement `if`/`for` bodies, spaces inside template interpolations `${ x }`).
+- `bun run lint`: Biome lint, format, and import-order check (`biome.json`). `bun run lint:fix` applies safe fixes; `bun run format` only formats.
+
+Biome's `useBlockStatements` is off, so single-statement `if`/`for` bodies go without braces, matching the existing code.
 
 Currency rates come from CurrencyFreaks via `VITE_CURRENCY_API_KEY`, which is set in the gitignored `.env` (template in `.env.example`). If the key is missing or the request fails, `defaultExchangeRates` defines only USD, so other currencies don't exist as units.
 
