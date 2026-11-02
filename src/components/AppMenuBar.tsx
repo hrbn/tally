@@ -17,7 +17,7 @@ import SvgIcon from '@mui/joy/SvgIcon';
 import Typography from '@mui/joy/Typography';
 import * as alls from '@uiw/codemirror-themes-all';
 import type React from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useCalc } from '../context';
 import demoContent from '../data/demo';
@@ -84,11 +84,21 @@ const Header = ({ bg, ...props }: HeaderProps) => (
 
 export default function MenuToolbar(props: HeaderProps) {
   const inputEl = useRef<HTMLInputElement | null>(null);
-  const { doc, lines, results, setDoc } = useCalc();
+  const { doc, lines, results, setDoc, setLines } = useCalc();
   const { format } = useFormatter();
   const [file, setFile] = useState<File | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { theme, setTheme } = useTheme();
+
+  // The editor doesn't call onChange for programmatic changes, so update lines and storage here too
+  const loadDocument = useCallback(
+    (text: string) => {
+      setDoc(text);
+      setLines(text.split('\n'));
+      localStorage.setItem('doc', text);
+    },
+    [setDoc, setLines],
+  );
 
   useEffect(() => {
     let fileReader: FileReader | undefined,
@@ -97,7 +107,7 @@ export default function MenuToolbar(props: HeaderProps) {
       fileReader = new FileReader();
       fileReader.onload = (e) => {
         const result = e.target?.result;
-        if (typeof result === 'string' && result && !isCancel) setDoc(result);
+        if (typeof result === 'string' && result && !isCancel) loadDocument(result);
       };
       fileReader.readAsText(file);
     }
@@ -105,7 +115,7 @@ export default function MenuToolbar(props: HeaderProps) {
       isCancel = true;
       if (fileReader && fileReader.readyState === 1) fileReader.abort();
     };
-  }, [file, setDoc]);
+  }, [file, loadDocument]);
 
   const exportFile = () => {
     saveToFile(doc);
@@ -130,8 +140,14 @@ export default function MenuToolbar(props: HeaderProps) {
     inputEl.current?.click();
   };
 
+  const selectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFile(event.target.files?.[0] ?? null);
+    // Clear the input so choosing the same file again still fires onChange
+    event.target.value = '';
+  };
+
   const openDemo = () => {
-    setDoc(demoContent);
+    loadDocument(demoContent);
   };
 
   const handleColorschemeChange = (event: React.SyntheticEvent | null, newValue: string | null) => {
@@ -150,6 +166,7 @@ export default function MenuToolbar(props: HeaderProps) {
 
   return (
     <Box>
+      <input ref={inputEl} type="file" accept=".txt,text/plain" hidden onChange={selectFile} />
       <Header bg={props.bg}>
         <Box
           sx={{
