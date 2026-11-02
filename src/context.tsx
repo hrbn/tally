@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useReducer } from 'react';
 import { Maths } from './components/Maths';
 import type { State } from './reducer';
 import CalcReducer, { initialState } from './reducer';
@@ -29,32 +29,32 @@ const CalcProvider: React.FC<CalcProviderProps> = ({ children }) => {
     });
   }, []);
 
-  const setDoc = (doc: string) => {
+  const setDoc = useCallback((doc: string) => {
     dispatch({
       type: 'SET_DOC',
       payload: {
         doc,
       },
     });
-  };
+  }, []);
 
-  const setLines = (lines: string[]) => {
+  const setLines = useCallback((lines: string[]) => {
     dispatch({
       type: 'SET_LINES',
       payload: {
         lines,
       },
     });
-  };
+  }, []);
 
-  const setResults = (results: Map<number, any>) => {
+  const setResults = useCallback((results: Map<number, any>) => {
     dispatch({
       type: 'SET_RESULTS',
       payload: {
         results,
       },
     });
-  };
+  }, []);
 
   const value: CalcState = {
     math: state.math,

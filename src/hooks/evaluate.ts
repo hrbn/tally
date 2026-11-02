@@ -1,4 +1,4 @@
-import type { MathJsStatic } from 'mathjs';
+import type { EvalFunction, MathJsStatic } from 'mathjs';
 
 import { defaultScope } from '../components/Maths';
 import { useCalc } from '../context';
@@ -35,7 +35,7 @@ export function evaluateLines(
 
     const aggregated = aggregate(trimmed, lineNumber);
     const preprocessed = preprocess(aggregated);
-    let compiled;
+    let compiled: EvalFunction | null;
     try {
       compiled = math.compile(preprocessed);
     } catch (e) {

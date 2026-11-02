@@ -1,12 +1,12 @@
 import { StreamLanguage } from '@codemirror/language';
 import { StateEffect } from '@codemirror/state';
-import { EditorView, ViewUpdate } from '@codemirror/view';
-import { BoxProps } from '@mui/joy';
+import { EditorView, type ViewUpdate } from '@codemirror/view';
+import type { BoxProps } from '@mui/joy';
 import Box from '@mui/joy/Box';
 import * as alls from '@uiw/codemirror-themes-all';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import CodeMirror, { useCodeMirror } from '@uiw/react-codemirror';
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { type FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useCalc } from '../context';
 import { monokai } from '../helpers/monokai';
 import { mathjs } from '../helpers/syntax';

@@ -46,15 +46,15 @@ const useResultPlugin = (): (() => import('@codemirror/state').Extension[]) => {
       this.line = line;
     }
     eq(other: ResultWidget): boolean {
-      return other.line == this.line;
+      return other.line === this.line;
     }
     toDOM(): HTMLElement {
-      let wrap = document.createElement('span');
-      let button = wrap.appendChild(document.createElement('button'));
+      const wrap = document.createElement('span');
+      const button = wrap.appendChild(document.createElement('button'));
       button.setAttribute('aria-hidden', 'true');
       button.className = 'cm-line-result ';
-      let box = button.appendChild(document.createElement('span'));
-      let res =
+      const box = button.appendChild(document.createElement('span'));
+      const res =
         results && results instanceof Map && results?.get(this.line - 1)
           ? `${format(results?.get(this.line - 1))}`
           : null;
@@ -67,11 +67,11 @@ const useResultPlugin = (): (() => import('@codemirror/state').Extension[]) => {
   }
 
   function resultDeco(view: EditorView): any {
-    let builder = new RangeSetBuilder<Decoration>();
-    for (let { from, to } of view.visibleRanges)
+    const builder = new RangeSetBuilder<Decoration>();
+    for (const { from, to } of view.visibleRanges)
       for (let pos = from; pos <= to; ) {
-        let line = view.state.doc.lineAt(pos);
-        let deco = Decoration.widget({
+        const line = view.state.doc.lineAt(pos);
+        const deco = Decoration.widget({
           widget: new ResultWidget(line.number),
           side: 1,
         });
@@ -101,9 +101,7 @@ const useResultPlugin = (): (() => import('@codemirror/state').Extension[]) => {
     },
   );
 
-  return function () {
-    return [baseTheme, showResults];
-  };
+  return () => [baseTheme, showResults];
 };
 
 export default useResultPlugin;

@@ -16,7 +16,8 @@ import type { SvgIconProps } from '@mui/joy/SvgIcon';
 import SvgIcon from '@mui/joy/SvgIcon';
 import Typography from '@mui/joy/Typography';
 import * as alls from '@uiw/codemirror-themes-all';
-import React, { useEffect, useRef, useState } from 'react';
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useCalc } from '../context';
 import demoContent from '../data/demo';
@@ -50,7 +51,7 @@ const copyTextToClipboard = async (text: string) => {
 
 const TallyIcon = (props: SvgIconProps) => (
   <SvgIcon>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
       <path d="M6,3.53v9.32L8.37,12V3.53h2.42v7.62l2.42-.86V3.53h2.42V9.44l2.42-.86V3.53h2.42v4.2l1.41-.5L23,6.83l.81,2.28-1.15.4-2.21.79V20.47H18.05V11.15L15.63,12v8.47H13.21V12.85l-2.42.86v6.76H8.37V14.56L6,15.42v5H3.53v-4.2l-1.41.5L1,17.17.17,14.89l1.15-.4,2.21-.79V3.53Z" />
     </svg>
   </SvgIcon>
@@ -104,20 +105,20 @@ export default function MenuToolbar(props: HeaderProps) {
       isCancel = true;
       if (fileReader && fileReader.readyState === 1) fileReader.abort();
     };
-  }, [file]);
+  }, [file, setDoc]);
 
-  const DownloadFile = () => {
+  const exportFile = () => {
     saveToFile(doc);
   };
 
-  const DownloadFileResults = () => {
+  const exportFileWithResults = () => {
     const docWithResults = [...results.values()]
       .map((v, i) => (v === null ? `${lines[i]}` : `${lines[i]} = ${format(v)}`))
       .join('\n');
     saveToFile(docWithResults);
   };
 
-  const CopyFileResults = () => {
+  const copyFileWithResults = () => {
     const docWithResults = [...results.values()]
       .map((v, i) => (v === null ? `${lines[i]}` : `${lines[i]} = ${format(v)}`))
       .join('\n');
@@ -125,11 +126,11 @@ export default function MenuToolbar(props: HeaderProps) {
     toast('Copied file with results');
   };
 
-  const UploadFile = () => {
+  const importFile = () => {
     inputEl.current?.click();
   };
 
-  const OpenDemoText = () => {
+  const openDemo = () => {
     setDoc(demoContent);
   };
 
@@ -178,13 +179,13 @@ export default function MenuToolbar(props: HeaderProps) {
           </MenuButton>
           <Menu sx={{ zIndex: 9999 }}>
             <MenuItem onClick={toggleDrawer(true)}>Settings</MenuItem>
-            <MenuItem onClick={DownloadFile}>Export File</MenuItem>
-            <MenuItem onClick={DownloadFileResults}>Export File with Solutions</MenuItem>
-            <MenuItem onClick={UploadFile}>Import File</MenuItem>
+            <MenuItem onClick={exportFile}>Export File</MenuItem>
+            <MenuItem onClick={exportFileWithResults}>Export File with Solutions</MenuItem>
+            <MenuItem onClick={importFile}>Import File</MenuItem>
             <ListDivider />
-            <MenuItem onClick={CopyFileResults}>Copy All</MenuItem>
+            <MenuItem onClick={copyFileWithResults}>Copy All</MenuItem>
             <ListDivider />
-            <MenuItem onClick={OpenDemoText}>View Demo</MenuItem>
+            <MenuItem onClick={openDemo}>View Demo</MenuItem>
           </Menu>
         </Dropdown>
       </Header>
