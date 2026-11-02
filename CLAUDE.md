@@ -8,7 +8,7 @@ Tally is a notepad-calculator PWA: each line of a CodeMirror document is evaluat
 
 Bun is the package manager, but Vite and Vitest run on Node 20.
 
-- `bun run start`: Vite dev server (served under the `/tally/` base path)
+- `bun run start`: Vite dev server on port 3000, served under the `/tally/` base path
 - `bun run build`: production build to `dist/`. `bun run deploy` builds and publishes `dist/` to GitHub Pages.
 - `bun run test`: run the suite once. **Use `bun run test`, not `bun test`.** `bun test` starts Bun's test runner, not Vitest.
 - `bun run test -- test/evaluate.test.ts` runs one file; add `-t "<name>"` to filter by test name.
@@ -17,7 +17,7 @@ Bun is the package manager, but Vite and Vitest run on Node 20.
 
 There is no lint script. Style rules are in `.eslintrc.json`; match the existing code (e.g. no braces around single-statement `if`/`for` bodies, spaces inside template interpolations `${ x }`).
 
-Currency rates come from CurrencyFreaks via `VITE_CURRENCY_API_KEY` in `.env` (see `.env.example`). Without a key (or if the request fails), `defaultExchangeRates` defines only USD, so other currencies don't exist as units.
+Currency rates come from CurrencyFreaks via `VITE_CURRENCY_API_KEY`, which is set in the gitignored `.env` (template in `.env.example`). If the key is missing or the request fails, `defaultExchangeRates` defines only USD, so other currencies don't exist as units.
 
 ## Architecture
 

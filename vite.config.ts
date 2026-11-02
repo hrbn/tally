@@ -57,6 +57,7 @@ export default defineConfig({
     VitePWA(pwaOptions)
   ],
   server: {
+    port: 3000,
     open: 'index.html'
   },
   publicDir: 'public'
