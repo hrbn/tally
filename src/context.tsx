@@ -1,16 +1,15 @@
-import { ReactNode, createContext, useContext, useEffect, useReducer } from 'react';
-
-import CalcReducer, { initialState } from './reducer';
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useReducer } from 'react';
 import { Maths } from './components/Maths';
+import type { State } from './reducer';
+import CalcReducer, { initialState } from './reducer';
 
-interface CalcState {
-  math: null;
-  doc: string;
-  lines: string[];
-  results: Map<any, any>;
+interface CalcState extends State {
+  setDoc: (doc: string) => void;
+  setLines: (lines: string[]) => void;
+  setResults: (results: Map<number, any>) => void;
 }
 
-const CalcContext = createContext<CalcState | undefined>(initialState);
+const CalcContext = createContext<CalcState | undefined>(undefined);
 
 interface CalcProviderProps {
   children: ReactNode;
@@ -24,38 +23,38 @@ const CalcProvider: React.FC<CalcProviderProps> = ({ children }) => {
       dispatch({
         type: 'SET_MATH',
         payload: {
-          math
-        }
+          math,
+        },
       });
     });
   }, []);
 
-  const setDoc = (doc: string) => {
+  const setDoc = useCallback((doc: string) => {
     dispatch({
       type: 'SET_DOC',
       payload: {
-        doc
-      }
+        doc,
+      },
     });
-  };
+  }, []);
 
-  const setLines = (lines: string[]) => {
+  const setLines = useCallback((lines: string[]) => {
     dispatch({
       type: 'SET_LINES',
       payload: {
-        lines
-      }
+        lines,
+      },
     });
-  };
+  }, []);
 
-  const setResults = (results: Map<any, any>) => {
+  const setResults = useCallback((results: Map<number, any>) => {
     dispatch({
       type: 'SET_RESULTS',
       payload: {
-        results
-      }
+        results,
+      },
     });
-  };
+  }, []);
 
   const value: CalcState = {
     math: state.math,
@@ -64,7 +63,7 @@ const CalcProvider: React.FC<CalcProviderProps> = ({ children }) => {
     results: state.results,
     setDoc,
     setLines,
-    setResults
+    setResults,
   };
   return <CalcContext.Provider value={value}>{children}</CalcContext.Provider>;
 };
@@ -77,4 +76,4 @@ const useCalc = (): CalcState => {
   return context;
 };
 
-export { useCalc, CalcProvider };
+export { CalcProvider, useCalc };

@@ -16,7 +16,7 @@ body {
 pre,
 code,
 .font-monospace {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: "IBM Plex Mono", monospace;
 }
 
 .cm-line-result {

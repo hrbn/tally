@@ -1,12 +1,16 @@
-import { Unit } from 'mathjs';
-import { functions, constants, currency } from './keywords.json';
+import * as mathjs from 'mathjs';
+import { constants, currency, functions } from './keywords.json';
+
+// mathjs's types don't declare the Unit class or its unit table
+const { UNITS } = (mathjs as unknown as { Unit: { UNITS: Record<string, { prefixes: Record<string, unknown> }> } })
+  .Unit;
 
 const units: any[] = (() => {
-  const baseUnits = Object.keys(Unit.UNITS);
+  const baseUnits = Object.keys(UNITS);
   const builtinUnits: string[] = [];
   baseUnits.forEach((e) => {
-    const prefixes = Object.keys(Unit.UNITS[e].prefixes);
-    if (prefixes.length) builtinUnits.push(...prefixes.map((p) => `${ p }${ e }`));
+    const prefixes = Object.keys(UNITS[e]?.prefixes ?? {});
+    if (prefixes.length) builtinUnits.push(...prefixes.map((p) => `${p}${e}`));
     builtinUnits.push(e);
   });
   const additionalUnits = 'px|pixel|pixels|pt|point|points|em|oF|oC|f|c|mph|kph'.split('|');
@@ -18,5 +22,5 @@ const operatorKeywords: string[] = 'in|to|last|off|of|mod|xor|or|ago'.split('|')
 const allKeywords = [...units, ...builtins, ...functions, ...operatorKeywords];
 const sortedKeywords: any[] = allKeywords.sort((a, b) => a.length - b.length).filter((item) => item.length > 0);
 
-export { functions, constants, units, builtins, operatorKeywords };
+export { builtins, constants, functions, operatorKeywords, units };
 export default sortedKeywords;

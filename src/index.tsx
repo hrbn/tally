@@ -10,10 +10,10 @@ import '@fontsource/ibm-plex-mono/latin-700.css';
 import '@fontsource/ibm-plex-mono/latin-700-italic.css';
 import './index.css';
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <ErrorBoundary>
       <App />
     </ErrorBoundary>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

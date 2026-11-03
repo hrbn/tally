@@ -1,7 +1,8 @@
 /** @type {import('vite').UserConfig} */
-import { defineConfig } from 'vite';
+
 import react from '@vitejs/plugin-react';
 import { visualizer } from 'rollup-plugin-visualizer';
+import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 const pwaOptions = {
@@ -22,28 +23,28 @@ const pwaOptions = {
         src: 'public/images/manifest-icon-192.png',
         sizes: '192x192',
         type: 'image/png',
-        purpose: 'any'
+        purpose: 'any',
       },
       {
         src: 'public/images/manifest-icon-192.maskable.png',
         sizes: '192x192',
         type: 'image/png',
-        purpose: 'maskable'
+        purpose: 'maskable',
       },
       {
         src: 'public/images/manifest-icon-512.png',
         sizes: '512x512',
         type: 'image/png',
-        purpose: 'any'
+        purpose: 'any',
       },
       {
         src: 'public/images/manifest-icon-512.maskable.png',
         sizes: '512x512',
         type: 'image/png',
-        purpose: 'maskable'
-      }
-    ]
-  }
+        purpose: 'maskable',
+      },
+    ],
+  },
 };
 
 export default defineConfig({
@@ -52,12 +53,13 @@ export default defineConfig({
     react(),
     visualizer({
       emitFile: true,
-      filename: 'stats.html'
+      filename: 'stats.html',
     }),
-    VitePWA(pwaOptions)
+    VitePWA(pwaOptions),
   ],
   server: {
-    open: 'index.html'
+    port: 3000,
+    open: 'index.html',
   },
-  publicDir: 'public'
+  publicDir: 'public',
 });

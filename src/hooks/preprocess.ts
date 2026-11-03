@@ -11,44 +11,44 @@ function shiftDecimal(number: string, places: number): string {
   const padded = fraction.padEnd(places, '0');
   const shiftedWhole = (whole + padded.slice(0, places)).replace(/^0+(?=\d)/, '');
   const shiftedFraction = padded.slice(places);
-  return shiftedFraction ? `${ shiftedWhole }.${ shiftedFraction }` : shiftedWhole;
+  return shiftedFraction ? `${shiftedWhole}.${shiftedFraction}` : shiftedWhole;
 }
 
 export function preprocess(text: string): string {
   // Remove commas from numbers before expanding magnitude suffixes
-  if (/(?<!\([^)]*)(?<!\[[^\]]*),(\d{3})/.test(text))
-    text = text.replace(/(?<!\([^)]*)(?<!\[[^\]]*),(\d{3})/g, '$1');
+  if (/(?<!\([^)]*)(?<!\[[^\]]*),(\d{3})/.test(text)) text = text.replace(/(?<!\([^)]*)(?<!\[[^\]]*),(\d{3})/g, '$1');
 
   // Expand thousands and millions suffixes
   text = text.replace(/(?<![\d.])(\d+(?:\.\d+)?)k\b/g, (match, number) => shiftDecimal(number, 3));
   text = text.replace(/(?<![\d.])(\d+(?:\.\d+)?)M\b/g, (match, number) => shiftDecimal(number, 6));
 
   // Pass dates to date function
-  if (/(?<!date\(\s*"?\s*\d{0,3})\b\d{1,4}[-/]\d{1,2}[-/]\d{1,4}( \d{1,2}:\d{2}(:\d{2})?( [AP]M)?( [A-Z]{3})?)?/.test(text))
-    text = text.replace(/(?<!date\(\s*"?\s*\d{0,3})\d{1,4}[-/]\d{1,2}[-/]\d{1,4}( \d{1,2}:\d{2}(:\d{2})?( [AP]M)?( [A-Z]{3})?)?/g, 'date("$&")');
+  if (
+    /(?<!date\(\s*"?\s*\d{0,3})\b\d{1,4}[-/]\d{1,2}[-/]\d{1,4}( \d{1,2}:\d{2}(:\d{2})?( [AP]M)?( [A-Z]{3})?)?/.test(
+      text,
+    )
+  )
+    text = text.replace(
+      /(?<!date\(\s*"?\s*\d{0,3})\d{1,4}[-/]\d{1,2}[-/]\d{1,4}( \d{1,2}:\d{2}(:\d{2})?( [AP]M)?( [A-Z]{3})?)?/g,
+      'date("$&")',
+    );
 
   // Quote arguments passed to date function
-  if (/date\([^"]+?\)/.test(text))
-    text = text.replace(/(date\()([^"]+?)(\))/g, '$1"$2"$3');
+  if (/date\([^"]+?\)/.test(text)) text = text.replace(/(date\()([^"]+?)(\))/g, '$1"$2"$3');
 
   // Remove comments
-  if (/\/\/.*/.test(text))
-    text = text.replace(/\/\/.*/g, '');
+  if (/\/\/.*/.test(text)) text = text.replace(/\/\/.*/g, '');
 
   // Use currency codes instead of symbols
   Object.entries(currencySymbols).forEach(([code, symbol]) => {
-    const removeRegex = new RegExp(`\\${ symbol }([\\d\\.]+\\s*[A-Za-z]{3})`, 'g');
-    if (removeRegex.test(text))
-      text = text.replace(removeRegex, '$1');
+    const removeRegex = new RegExp(`\\${symbol}([\\d\\.]+\\s*[A-Za-z]{3})`, 'g');
+    if (removeRegex.test(text)) text = text.replace(removeRegex, '$1');
 
-    const replaceRegex = new RegExp(`\\${ symbol }([\\d\\.\\,]+)(?=([^\\d\\.\\,A-Z]|$))(?!\\b\\s*[A-Za-z]{3})`, 'g');
-    if (replaceRegex.test(text))
-      text = text.replace(replaceRegex, `$1 ${ code }`);
+    const replaceRegex = new RegExp(`\\${symbol}([\\d\\.\\,]+)(?=([^\\d\\.\\,A-Z]|$))(?!\\b\\s*[A-Za-z]{3})`, 'g');
+    if (replaceRegex.test(text)) text = text.replace(replaceRegex, `$1 ${code}`);
 
-    const inRegex = new RegExp(`\\bin\\s+\\${ symbol }`);
-    if (inRegex.test(text))
-      text = text.replace(inRegex, `in ${ code }`);
-
+    const inRegex = new RegExp(`\\bin\\s+\\${symbol}`);
+    if (inRegex.test(text)) text = text.replace(inRegex, `in ${code}`);
   });
 
   // Add or subtract percentages
@@ -63,27 +63,25 @@ export function preprocess(text: string): string {
   if (/(\d+((,\d{3})+)?(\.\d+)?)% of what is (\d+((,\d{3})+)?(\.\d+)?)/.test(text))
     text = text.replace(/(\d+((,\d{3})+)?(\.\d+)?)% of what is (\d+((,\d{3})+)?(\.\d+)?)/g, '(100/$1)*$5');
 
-
   // Change percent to fraction
-  if (/(\d+((,\d{3})+)?(\.\d+)?)%/.test(text))
-    text = text.replace(/([\d.,]+)%/g, '($1/100)');
+  if (/(\d+((,\d{3})+)?(\.\d+)?)%/.test(text)) text = text.replace(/([\d.,]+)%/g, '($1/100)');
 
   // Change "of" to *
-  if (/ of /.test(text))
-    text = text.replace(/ of /g, ' * ');
+  if (/ of /.test(text)) text = text.replace(/ of /g, ' * ');
 
   // Replace "x unit ago" with "now - x unit"
-  if (/([\d.]+ [A-Za-z]+) ago/.test(text))
-    text = text.replace(/([\d.]+ [A-Za-z]+) ago/g, 'now - $1');
+  if (/([\d.]+ [A-Za-z]+) ago/.test(text)) text = text.replace(/([\d.]+ [A-Za-z]+) ago/g, 'now - $1');
 
   // Replace f or c with degF or degC after a number or "to"/"in", unless it's a function call
-  text = text.replace(/(?<=(?:\d|\b(?:to|in))\s*)([fc])(?![A-Za-z])(?!\s*\()/g, (match, unit) => (unit === 'f' ? 'degF' : 'degC'));
+  text = text.replace(/(?<=(?:\d|\b(?:to|in))\s*)([fc])(?![A-Za-z])(?!\s*\()/g, (match, unit) =>
+    unit === 'f' ? 'degF' : 'degC',
+  );
   // Remove new line characters
   text = text.replace(/\\n/g, '');
 
   return text;
 }
 
-const usePreprocessor = (): { preprocess: (text: string) => string; } => ({ preprocess });
+const usePreprocessor = (): { preprocess: (text: string) => string } => ({ preprocess });
 
 export default usePreprocessor;

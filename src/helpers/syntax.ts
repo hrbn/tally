@@ -1,9 +1,9 @@
-import sortedKeywords, { units, functions, constants, builtins, operatorKeywords } from '../data/keywords';
+import sortedKeywords, { builtins, constants, functions, operatorKeywords, units } from '../data/keywords';
 
 function words(array: string[]): Record<string, boolean> {
   var keys: Record<string, boolean> = {};
-  for (var i = 0; i < array.length; ++i) {
-    keys[array[i]] = true;
+  for (const key of array) {
+    keys[key] = true;
   }
   return keys;
 }
@@ -18,11 +18,11 @@ var isOperatorChar = /[+\-*&=<>/:^%!]/;
 
 function tokenBase(stream: any, state: any): string | null {
   var ch = stream.next();
-  if (ch == '#' || (ch == '/' && stream.eat('/'))) {
+  if (ch === '#' || (ch === '/' && stream.eat('/'))) {
     stream.skipToEnd();
     return 'comment';
   }
-  if (ch == '"' || ch == "'") {
+  if (ch === '"' || ch === "'") {
     state.tokenize = tokenString(ch);
     return state.tokenize(stream, state);
   }
@@ -65,16 +65,17 @@ function tokenBase(stream: any, state: any): string | null {
 }
 
 function tokenString(quote: string): (stream: any, state: any) => string {
-  return function (stream, state) {
+  return (stream, state) => {
     var escaped = false,
-      next,
       end = false;
-    while ((next = stream.next()) != null) {
-      if (next == quote && !escaped) {
+    let next: string | undefined = stream.next();
+    while (next !== undefined) {
+      if (next === quote && !escaped) {
         end = true;
         break;
       }
-      escaped = !escaped && next == '\\';
+      escaped = !escaped && next === '\\';
+      next = stream.next();
     }
     if (end || !escaped) state.tokenize = null;
     return 'string';
@@ -83,20 +84,17 @@ function tokenString(quote: string): (stream: any, state: any) => string {
 
 export const mathjs = {
   name: 'mathjs',
-  startState: function (): { tokenize: null; } {
-    return { tokenize: null };
-  },
+  startState: (): { tokenize: null } => ({ tokenize: null }),
 
-  token: function (stream: any, state: any): string | null {
+  token: (stream: any, state: any): string | null => {
     if (stream.eatSpace()) return null;
     var style = (state.tokenize || tokenBase)(stream, state);
-    if (style == 'comment' || style == 'meta') return style;
     return style;
   },
 
   languageData: {
     autocomplete: sortedKeywords,
     closeBrackets: { brackets: ['(', '[', '{', "'", '"', '`'] },
-    commentTokens: { line: '#' }
-  }
+    commentTokens: { line: '#' },
+  },
 };

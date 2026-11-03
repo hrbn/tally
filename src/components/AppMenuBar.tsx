@@ -1,47 +1,36 @@
-
-import IconButton from '@mui/joy/IconButton';
+import MoreVert from '@mui/icons-material/MoreVert';
+import type { BoxProps } from '@mui/joy/Box';
+import Box from '@mui/joy/Box';
+import Drawer from '@mui/joy/Drawer';
+import Dropdown from '@mui/joy/Dropdown';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
+import IconButton from '@mui/joy/IconButton';
 import ListDivider from '@mui/joy/ListDivider';
-import Dropdown from '@mui/joy/Dropdown';
 import Menu from '@mui/joy/Menu';
 import MenuButton from '@mui/joy/MenuButton';
 import MenuItem from '@mui/joy/MenuItem';
-import MoreVert from '@mui/icons-material/MoreVert';
-import Box from '@mui/joy/Box';
-import Drawer from '@mui/joy/Drawer';
 import Option from '@mui/joy/Option';
 import Select from '@mui/joy/Select';
+import type { SvgIconProps } from '@mui/joy/SvgIcon';
 import SvgIcon from '@mui/joy/SvgIcon';
 import Typography from '@mui/joy/Typography';
-
-
 import * as alls from '@uiw/codemirror-themes-all';
-import React, { useEffect, useRef, useState } from 'react';
-
+import type React from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useCalc } from '../context';
 import demoContent from '../data/demo';
 import useFormatter from '../hooks/format';
 import { useTheme } from '../hooks/theme';
-import type { BoxProps } from '@mui/joy/Box';
-import type { SvgIconProps } from '@mui/joy/SvgIcon';
-import type { ReactCodeMirrorProps} from '@uiw/react-codemirror';
 
 const themeOptions = ['dark', 'light']
   .concat(Object.keys(alls))
   .filter((item) => typeof alls[item as keyof typeof alls] !== 'function')
-  .filter((item) => !/^(defaultSettings)/.test(item as keyof typeof alls));
+  .filter((item) => !/^(defaultSettings)/.test(item));
 
-type CalcContextType = {
-  doc: string;
-  lines: string[];
-  results: Map<number, any>;
-  settings: {
-    theme: ReactCodeMirrorProps['theme'];
-  };
-  setDoc: React.Dispatch<React.SetStateAction<string>>;
-  setSettings: React.Dispatch<React.SetStateAction<any>>;
+type HeaderProps = BoxProps & {
+  bg?: string;
 };
 
 const saveToFile = (content: string) => {
@@ -55,22 +44,20 @@ const saveToFile = (content: string) => {
 };
 
 const copyTextToClipboard = async (text: string) => {
-  if ('clipboard' in navigator) 
-    return await navigator.clipboard.writeText(text);
-   
+  if ('clipboard' in navigator) return await navigator.clipboard.writeText(text);
+
   return document.execCommand('copy', true, text);
-  
 };
 
 const TallyIcon = (props: SvgIconProps) => (
   <SvgIcon>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
       <path d="M6,3.53v9.32L8.37,12V3.53h2.42v7.62l2.42-.86V3.53h2.42V9.44l2.42-.86V3.53h2.42v4.2l1.41-.5L23,6.83l.81,2.28-1.15.4-2.21.79V20.47H18.05V11.15L15.63,12v8.47H13.21V12.85l-2.42.86v6.76H8.37V14.56L6,15.42v5H3.53v-4.2l-1.41.5L1,17.17.17,14.89l1.15-.4,2.21-.79V3.53Z" />
     </svg>
   </SvgIcon>
 );
 
-const Header = (props: BoxProps) => (
+const Header = ({ bg, ...props }: HeaderProps) => (
   <Box
     component="header"
     className="Header"
@@ -79,7 +66,7 @@ const Header = (props: BoxProps) => (
       {
         p: 2,
         gap: 2,
-        bgcolor: props.bg,
+        bgcolor: bg,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -95,72 +82,91 @@ const Header = (props: BoxProps) => (
   />
 );
 
-export default function MenuToolbar(props: BoxProps) {
+export default function MenuToolbar(props: HeaderProps) {
   const inputEl = useRef<HTMLInputElement | null>(null);
-  const { doc, lines, results, setDoc, settings, setSettings } = useCalc() as CalcContextType;
+  const { doc, lines, results, setDoc, setLines } = useCalc();
   const { format } = useFormatter();
   const [file, setFile] = useState<File | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { theme, setTheme } = useTheme();
 
+  // The editor doesn't call onChange for programmatic changes, so update lines and storage here too
+  const loadDocument = useCallback(
+    (text: string) => {
+      setDoc(text);
+      setLines(text.split('\n'));
+      localStorage.setItem('doc', text);
+    },
+    [setDoc, setLines],
+  );
+
   useEffect(() => {
-    let fileReader,
+    let fileReader: FileReader | undefined,
       isCancel = false;
     if (file) {
       fileReader = new FileReader();
       fileReader.onload = (e) => {
-        const { result } = e.target;
-        if (result && !isCancel) 
-          setDoc(result);
-        
+        const result = e.target?.result;
+        if (typeof result === 'string' && result && !isCancel) loadDocument(result);
       };
       fileReader.readAsText(file);
     }
     return () => {
       isCancel = true;
-      if (fileReader && fileReader.readyState === 1) 
-        fileReader.abort();
-      
+      if (fileReader && fileReader.readyState === 1) fileReader.abort();
     };
-  }, [file]);
+  }, [file, loadDocument]);
 
-  const DownloadFile = () => {
+  const exportFile = () => {
     saveToFile(doc);
   };
 
-  const DownloadFileResults = () => {
-    const docWithResults = [...results.values()].map((v: string, i: string) => (v === null ? `${lines[i]}` : `${lines[i]} = ${format(v)}`)).join('\n');
+  const exportFileWithResults = () => {
+    const docWithResults = [...results.values()]
+      .map((v, i) => (v === null ? `${lines[i]}` : `${lines[i]} = ${format(v)}`))
+      .join('\n');
     saveToFile(docWithResults);
   };
 
-  const CopyFileResults = () => {
-    const docWithResults = [...results.values()].map((v: string, i: string) => (v === null ? `${lines[i]}` : `${lines[i]} = ${format(v)}`)).join('\n');
+  const copyFileWithResults = () => {
+    const docWithResults = [...results.values()]
+      .map((v, i) => (v === null ? `${lines[i]}` : `${lines[i]} = ${format(v)}`))
+      .join('\n');
     copyTextToClipboard(docWithResults);
     toast('Copied file with results');
   };
 
-  const UploadFile = () => {
-    inputEl.current.click();
+  const importFile = () => {
+    inputEl.current?.click();
   };
 
-  const OpenDemoText = () => {
-    setDoc(demoContent);
+  const selectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFile(event.target.files?.[0] ?? null);
+    // Clear the input so choosing the same file again still fires onChange
+    event.target.value = '';
+  };
+
+  const openDemo = () => {
+    loadDocument(demoContent);
   };
 
   const handleColorschemeChange = (event: React.SyntheticEvent | null, newValue: string | null) => {
-    setTheme(newValue as ReactCodeMirrorProps['theme']);
+    if (newValue) setTheme(newValue);
   };
 
   const toggleDrawer = (isOpen: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
-    if (event.type === 'keydown' && ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')) 
+    if (
+      event.type === 'keydown' &&
+      ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')
+    )
       return;
-    
 
     setDrawerOpen(isOpen);
   };
 
   return (
     <Box>
+      <input ref={inputEl} type="file" accept=".txt,text/plain" hidden onChange={selectFile} />
       <Header bg={props.bg}>
         <Box
           sx={{
@@ -190,13 +196,13 @@ export default function MenuToolbar(props: BoxProps) {
           </MenuButton>
           <Menu sx={{ zIndex: 9999 }}>
             <MenuItem onClick={toggleDrawer(true)}>Settings</MenuItem>
-            <MenuItem onClick={DownloadFile}>Export File</MenuItem>
-            <MenuItem onClick={DownloadFileResults}>Export File with Solutions</MenuItem>
-            <MenuItem onClick={UploadFile}>Import File</MenuItem>
+            <MenuItem onClick={exportFile}>Export File</MenuItem>
+            <MenuItem onClick={exportFileWithResults}>Export File with Solutions</MenuItem>
+            <MenuItem onClick={importFile}>Import File</MenuItem>
             <ListDivider />
-            <MenuItem onClick={CopyFileResults}>Copy All</MenuItem>
+            <MenuItem onClick={copyFileWithResults}>Copy All</MenuItem>
             <ListDivider />
-            <MenuItem onClick={OpenDemoText}>View Demo</MenuItem>
+            <MenuItem onClick={openDemo}>View Demo</MenuItem>
           </Menu>
         </Dropdown>
       </Header>

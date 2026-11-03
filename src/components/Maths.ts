@@ -12,7 +12,7 @@ export const Maths = async (): Promise<mathjs.MathJsStatic> => {
   let exchangeRates: ExchangeRateResponse;
   try {
     const fetchPromise = fetchExchangeRates();
-    const timeoutPromise = new Promise<ExchangeRateResponse>((_, reject) => 
+    const timeoutPromise = new Promise<ExchangeRateResponse>((_, reject) =>
       setTimeout(() => reject(new Error('Exchange rate API request timed out')), 5000),
     );
     exchangeRates = await Promise.race([fetchPromise, timeoutPromise]);
@@ -93,11 +93,11 @@ export const Maths = async (): Promise<mathjs.MathJsStatic> => {
 
   // Create base currency unit
   math.createUnit(exchangeRates.base, { aliases: [exchangeRates.base.toLowerCase()] });
-  
+
   // List of currency units that shouldn't be aliased to avoid conflicts with other units
   const doNotAlias = ['cup', 'T'];
   let loaded = 1;
-  
+
   // Only try to load other currencies if they exist in the response
   if (exchangeRates.rates && Object.keys(exchangeRates.rates).length > 0) {
     Object.keys(exchangeRates.rates)
@@ -186,8 +186,7 @@ function hexToChar(input: string): string {
 
 function charToHex(input: string): string {
   return [...input]
-    .map((char) => char.charCodeAt(0).toString(16)
-      .padStart(4, '0'))
+    .map((char) => char.charCodeAt(0).toString(16).padStart(4, '0'))
     .join('')
     .toUpperCase();
 }

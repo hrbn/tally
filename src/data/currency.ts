@@ -23,14 +23,14 @@ export const fetchExchangeRates = async (): Promise<ExchangeRateResponse> => {
       console.warn('No API key found for currency exchange rates. Using default USD rate only.');
       return defaultExchangeRates;
     }
-    
+
     const response = await axios.get(`https://api.currencyfreaks.com/v2.0/rates/latest?apikey=${apiKey}`);
-    
+
     if (!response?.data?.rates || Object.keys(response.data.rates).length === 0) {
       console.warn('Invalid response from currency exchange rate API. Using default USD rate only.');
       return defaultExchangeRates;
     }
-    
+
     return response.data;
   } catch (error) {
     console.error('Failed to fetch exchange rates:', error);
