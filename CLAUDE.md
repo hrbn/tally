@@ -6,7 +6,7 @@ Tally is a notepad-calculator PWA: each line of a CodeMirror document is evaluat
 
 ## Commands
 
-Bun is the package manager, and the Vite and Vitest scripts run on the Bun runtime (`bun --bun`). Scripts without `--bun` (`typecheck`, `deploy`, `mkicons`, `mksplash`) still run their CLIs on Node 20. Coverage uses the Istanbul provider because Bun runs on JavaScriptCore and has no V8 coverage.
+Bun is the package manager and the runtime: every script runs its CLI with `bun --bun`, which overrides the `#!/usr/bin/env node` shebang. Keep `--bun` on new scripts. Coverage uses the Istanbul provider because Bun runs on JavaScriptCore and has no V8 coverage. `pwa-asset-generator` must be 8.x; 6.x (old Puppeteer) can't connect to Chrome under Bun.
 
 - `bun run start`: Vite dev server on port 3000, served under the `/tally/` base path
 - `bun run build`: production build to `dist/`. `bun run deploy` builds and publishes `dist/` to GitHub Pages.
