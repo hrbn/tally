@@ -6,7 +6,7 @@ Tally is a notepad-calculator PWA: each line of a CodeMirror document is evaluat
 
 ## Commands
 
-Bun is the package manager, but Vite and Vitest run on Node 20.
+Bun is the package manager, and the Vite and Vitest scripts run on the Bun runtime (`bun --bun`). Scripts without `--bun` (`typecheck`, `deploy`, `mkicons`, `mksplash`) still run their CLIs on Node 20. Coverage uses the Istanbul provider because Bun runs on JavaScriptCore and has no V8 coverage.
 
 - `bun run start`: Vite dev server on port 3000, served under the `/tally/` base path
 - `bun run build`: production build to `dist/`. `bun run deploy` builds and publishes `dist/` to GitHub Pages.
