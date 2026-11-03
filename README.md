@@ -16,7 +16,7 @@ A notepad calculator Progressive Web App (PWA) with instant calculations as you 
 To run locally, follow these steps:
 
 1. Clone this repository.
-2. Install [Bun](https://bun.sh) and Node 20 (e.g. `nvm install 20 && nvm use 20`). Bun is the package manager; Vite and Vitest still run on Node.
+2. Install [Bun](https://bun.sh) 1.4 or later. Every script runs on the Bun runtime, so Node isn't needed.
 3. Install the dependencies by running `bun install` in the project directory.
 4. Create a `.env` file in the root directory and add your CurrencyFreaks API key:
 

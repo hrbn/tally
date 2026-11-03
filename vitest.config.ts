@@ -9,7 +9,8 @@ export default defineConfig({
     environment: 'node',
     setupFiles: ['test/setup.ts'],
     coverage: {
-      provider: 'v8',
+      // Bun runs on JavaScriptCore, so V8 coverage isn't available
+      provider: 'istanbul',
       // The calculation logic; UI code isn't unit tested
       include: [
         'src/hooks/preprocess.ts',
@@ -20,10 +21,10 @@ export default defineConfig({
       ],
       reporter: ['text', 'html'],
       // Set just below current coverage so regressions fail the run
-      statements: 85,
-      lines: 85,
-      branches: 90,
-      functions: 50,
+      statements: 82,
+      lines: 81,
+      branches: 83,
+      functions: 60,
     },
   },
 });
