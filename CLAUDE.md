@@ -19,6 +19,8 @@ Bun is the package manager, but Vite and Vitest run on Node 20.
 
 Biome's `useBlockStatements` is off, so single-statement `if`/`for` bodies go without braces, matching the existing code.
 
+There must be exactly one copy of `@codemirror/state` in `node_modules` (`find node_modules -path "*@codemirror/state/package.json"`). If `@codemirror/view` needs a newer `state` than the top-level one, bun nests a second copy, and the editor throws "No tile at position undefined" when you click or type. Bump `@codemirror/state` to match, then delete `node_modules` and reinstall, because `bun install` leaves the old nested copies on disk.
+
 Currency rates come from CurrencyFreaks via `VITE_CURRENCY_API_KEY`, which is set in the gitignored `.env` (template in `.env.example`). If the key is missing or the request fails, `defaultExchangeRates` defines only USD, so other currencies don't exist as units.
 
 ## Architecture
